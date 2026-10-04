@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Samaira — AI Vocational Career Counsellor | SIH 26241</title>
+  <meta name="description" content="AI-Enabled Career Counselling and Family Decision-Support Platform for Vocational Education. Supporting families in English and Gujarati.">
+  <link rel="stylesheet" href="index.css">
+  <link rel="icon" href="assets/samaira/samaira_avatar.png" type="image/png">
+</head>
+<body>
+  <!-- Header / Navigation -->
+  <header class="app-header">
+    <div class="header-container">
+      <div id="nav-brand" class="brand-wrapper">
+        <img src="assets/samaira/samaira_avatar.png" alt="Samaira" class="brand-avatar">
+        <div class="brand-info">
+          <span class="brand-name">Samaira AI</span>
+          <span class="brand-sub">Vocational Career & Family Counsellor</span>
+        </div>
+      </div>
+
+      <nav class="nav-links">
+        <button id="nav-home-btn" class="nav-btn active">Home</button>
+        <button id="nav-trades-btn" class="nav-btn">Explore Trades</button>
+        <button id="nav-counsel-btn" class="nav-btn">Electrician Scene</button>
+        <button id="nav-admin-btn" class="nav-btn">Admin Dashboard</button>
+      </nav>
+
+      <div class="nav-actions">
+        <!-- Language Switcher -->
+        <div class="lang-switch">
+          <button id="lang-en-btn" class="lang-opt active">English</button>
+          <button id="lang-gu-btn" class="lang-opt">ગુજરાતી</button>
+        </div>
+
+        <!-- Counsellor Escalation Button -->
+        <button id="nav-escalate-btn" class="btn-counsellor-nav">
+          <span>👨‍🏫</span>
+          <span id="nav-escalate-text">Talk to Counsellor</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main View Container -->
+  <main id="main-app-content" class="app-container">
+    <!-- Rendered dynamically by app.js -->
+  </main>
+
+  <!-- Modal Mount Point -->
+  <div id="modal-root"></div>
+
+  <!-- Main ES Module Script -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>
