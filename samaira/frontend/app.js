@@ -7,22 +7,25 @@ import { renderAdminDashboard } from "./components/AdminDashboard.js";
 
 class SamairaApp {
   constructor() {
-    this.currentScreen = "welcome"; // welcome, family, profile, careers, environment, admin
+    this.currentScreen = "welcome"; // welcome, profile, careers, environment, admin
     this.language = "en-IN"; // en-IN, gu-IN
     this.familyType = "family"; // family (Student + Parent), student
     this.studentProfile = {
       education: "10th pass",
       location: "Gujarat",
-      interest: "Practical technical work & machinery (Hands-on)"
+      interest: "practical technical work & machinery",
+      preferred_career: "Electrician"
     };
     this.selectedCourseId = "VOC001"; // Default Electrician
     this.envTab = "workplace"; // workplace, growth, income, safety
+    this.activeOptionKey = null;
     this.courses = [];
     this.parentConcerns = [];
     this.samaira = null;
     this.isCounsellorModalOpen = false;
     this.isRecording = false;
     this.recognition = null;
+    this.lastAnswerData = null;
 
     this.init();
   }
@@ -107,11 +110,8 @@ class SamairaApp {
   updateMicVisuals(recording) {
     const micBtn = document.getElementById("btn-mic-toggle");
     if (micBtn) {
-      if (recording) {
-        micBtn.classList.add("recording");
-      } else {
-        micBtn.classList.remove("recording");
-      }
+      if (recording) micBtn.classList.add("recording");
+      else micBtn.classList.remove("recording");
     }
   }
 
@@ -133,7 +133,7 @@ class SamairaApp {
     this.language = lang;
     document.getElementById("lang-en-btn")?.classList.toggle("active", lang === "en-IN");
     document.getElementById("lang-gu-btn")?.classList.toggle("active", lang === "gu-IN");
-    
+
     const escalateText = document.getElementById("nav-escalate-text");
     if (escalateText) escalateText.textContent = this.t("nav_talk_counsellor");
 
@@ -187,7 +187,6 @@ class SamairaApp {
         if (e.target.id === "counsellor-modal-overlay") this.closeCounsellorModal();
       });
 
-      // Tab switcher in modal
       const typeInput = document.getElementById("escalation-type");
       const tabCall = document.getElementById("modal-tab-call");
       const tabSession = document.getElementById("modal-tab-session");
@@ -195,7 +194,7 @@ class SamairaApp {
 
       tabCall?.addEventListener("click", (e) => {
         e.preventDefault();
-        typeInput.value = "call";
+        if (typeInput) typeInput.value = "call";
         tabCall.classList.add("active");
         tabSession?.classList.remove("active");
         tabQuery?.classList.remove("active");
@@ -203,7 +202,7 @@ class SamairaApp {
 
       tabSession?.addEventListener("click", (e) => {
         e.preventDefault();
-        typeInput.value = "session";
+        if (typeInput) typeInput.value = "session";
         tabSession.classList.add("active");
         tabCall?.classList.remove("active");
         tabQuery?.classList.remove("active");
@@ -211,50 +210,42 @@ class SamairaApp {
 
       tabQuery?.addEventListener("click", (e) => {
         e.preventDefault();
-        typeInput.value = "question";
+        if (typeInput) typeInput.value = "question";
         tabQuery.classList.add("active");
         tabCall?.classList.remove("active");
         tabSession?.classList.remove("active");
       });
 
-      // Submit
+      // Submit escalation form
       document.getElementById("escalation-form")?.addEventListener("submit", async (e) => {
         e.preventDefault();
-        const name = document.getElementById("escalation-name").value;
-        const phone = document.getElementById("escalation-phone").value;
-        const notes = document.getElementById("escalation-notes").value;
-        const type = document.getElementById("escalation-type").value;
-        const courseId = document.getElementById("escalation-course-id").value;
+        const name = document.getElementById("escalation-name")?.value;
+        const phone = document.getElementById("escalation-phone")?.value;
+        const notes = document.getElementById("escalation-notes")?.value;
+        const type = document.getElementById("escalation-type")?.value || "call";
+        const courseId = document.getElementById("escalation-course-id")?.value || "VOC001";
         const statusBox = document.getElementById("escalation-status-msg");
 
         try {
-          const res = await fetch("/api/counsellor/request", {
+          await fetch("/api/counsellor/request", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name, phone, notes, type, course_id: courseId })
           });
-          const result = await res.json();
-          if (statusBox) {
-            statusBox.style.display = "block";
-            statusBox.style.background = "rgba(16, 185, 129, 0.2)";
-            statusBox.style.color = "#34d399";
-            statusBox.style.border = "1px solid #10b981";
-            statusBox.textContent = this.t("modal_success");
-          }
-          setTimeout(() => {
-            this.closeCounsellorModal();
-          }, 2200);
         } catch (err) {
-          if (statusBox) {
-            statusBox.style.display = "block";
-            statusBox.style.background = "rgba(16, 185, 129, 0.2)";
-            statusBox.style.color = "#34d399";
-            statusBox.textContent = this.t("modal_success");
-          }
-          setTimeout(() => {
-            this.closeCounsellorModal();
-          }, 2000);
+          console.warn("Escalation API notice:", err);
         }
+
+        if (statusBox) {
+          statusBox.style.display = "block";
+          statusBox.style.background = "rgba(16, 185, 129, 0.2)";
+          statusBox.style.color = "#34d399";
+          statusBox.style.border = "1px solid #10b981";
+          statusBox.textContent = this.t("modal_success");
+        }
+        setTimeout(() => {
+          this.closeCounsellorModal();
+        }, 2200);
       });
     }
   }
@@ -265,8 +256,6 @@ class SamairaApp {
 
     if (this.currentScreen === "welcome") {
       this.renderWelcomeScreen(mainEl);
-    } else if (this.currentScreen === "family") {
-      this.renderFamilyIntroScreen(mainEl);
     } else if (this.currentScreen === "profile") {
       this.renderProfileScreen(mainEl);
     } else if (this.currentScreen === "careers") {
@@ -280,7 +269,7 @@ class SamairaApp {
     this.renderModal();
   }
 
-  // SCREEN 1: Welcome
+  // SCREEN 1: Welcome & Natural Greeting by Samaira
   renderWelcomeScreen(container) {
     const isGu = this.language.includes("gu");
     container.innerHTML = `
@@ -311,10 +300,12 @@ class SamairaApp {
             </button>
           </div>
 
-          <div style="margin-top: 20px; display: flex; gap: 16px; align-items: center; border-top: 1px solid var(--border-glass); padding-top: 18px;">
+          <div style="margin-top: 24px; display: flex; gap: 16px; align-items: center; border-top: 1px solid var(--border-glass); padding-top: 18px;">
             <img src="assets/samaira/samaira_quote_bubble.png" style="max-height: 52px; border-radius: 8px;" alt="Samaira Badge" />
-            <div style="font-size: 0.88rem; color: var(--text-dim);">
-              ${isGu ? "વિદ્યાર્થીઓ અને વાલીઓ માટે સલામત, પ્રમાણિત અને વ્યવહારુ માર્ગદર્શન." : "Empathetic, data-backed career guidance designed specifically for students and parents."}
+            <div style="font-size: 0.88rem; color: var(--text-dim); line-height: 1.5;">
+              ${isGu 
+                ? "વિદ્યાર્થીઓ અને વાલીઓ માટે સલામત, પ્રમાણિત અને વ્યવહારુ વોકેશનલ માર્ગદર્શન." 
+                : "Empathetic, data-backed career guidance designed specifically for students and parents."}
             </div>
           </div>
         </div>
@@ -324,62 +315,106 @@ class SamairaApp {
     `;
 
     this.samaira = new SamairaCharacter("samaira-welcome-container");
-    const speech = isGu 
-      ? "નમસ્તે! હું સમાયરા છું. હું તમને અને તમારા પરિવારને વ્યવસાયિક કારકિર્દી વિકલ્પો સમજવામાં મદદ કરીશ."
-      : "Hello, I'm Samaira. I'm here to help you and your family explore vocational career opportunities.";
-    this.samaira.speak(speech, "welcoming", this.language);
+    const introSpeech = this.t("welcome_spoken_intro");
+    this.samaira.speak(introSpeech, "welcoming", this.language);
 
-    document.getElementById("btn-start-counselling")?.addEventListener("click", () => this.navigate("family"));
+    document.getElementById("btn-start-counselling")?.addEventListener("click", () => this.navigate("profile"));
     document.getElementById("btn-explore-trades")?.addEventListener("click", () => this.navigate("careers"));
   }
 
-  // SCREEN 2: Family Introduction
-  renderFamilyIntroScreen(container) {
+  // SCREEN 2: Student Profile ("Before we begin, may I know a little about the student?")
+  renderProfileScreen(container) {
     const isGu = this.language.includes("gu");
     container.innerHTML = `
       <div style="display: grid; grid-template-columns: 1fr 340px; gap: 36px; align-items: start; margin-top: 20px;">
         <div class="glass-panel step-card" style="margin: 0;">
           <div class="step-header">
             <div class="step-number">Step 1 of 3</div>
-            <h2 class="step-title">${this.t("family_title")}</h2>
-            <p class="step-subtitle">${this.t("family_sub")}</p>
+            <h2 class="step-title">${this.t("profile_ask_title")}</h2>
+            <p class="step-subtitle">${this.t("profile_sub")}</p>
           </div>
 
-          <div class="family-options-grid">
-            <div id="card-opt-student" class="selection-card ${this.familyType === 'student' ? 'selected' : ''}">
-              <div class="selection-icon">🎓</div>
-              <div class="selection-title">${this.t("family_opt_student")}</div>
-              <div class="selection-desc">${this.t("family_opt_student_desc")}</div>
+          <form id="profile-form">
+            <!-- 1. Who is with me today -->
+            <div class="form-group">
+              <label class="form-label">${this.t("family_question")}</label>
+              <div class="family-options-grid" style="margin-bottom: 16px;">
+                <div id="card-opt-family" class="selection-card ${this.familyType === 'family' ? 'selected' : ''}">
+                  <span class="selection-badge">${this.t("family_opt_family_badge")}</span>
+                  <div class="selection-icon">👨‍👩‍👧</div>
+                  <div class="selection-title">${this.t("family_opt_family")}</div>
+                  <div class="selection-desc">${this.t("family_opt_family_desc")}</div>
+                </div>
+
+                <div id="card-opt-student" class="selection-card ${this.familyType === 'student' ? 'selected' : ''}">
+                  <div class="selection-icon">🎓</div>
+                  <div class="selection-title">${this.t("family_opt_student")}</div>
+                  <div class="selection-desc">${this.t("family_opt_student_desc")}</div>
+                </div>
+              </div>
             </div>
 
-            <div id="card-opt-family" class="selection-card ${this.familyType === 'family' ? 'selected' : ''}">
-              <span class="selection-badge">${this.t("family_opt_family_badge")}</span>
-              <div class="selection-icon">👨‍👩‍👧</div>
-              <div class="selection-title">${this.t("family_opt_family")}</div>
-              <div class="selection-desc">${this.t("family_opt_family_desc")}</div>
+            <!-- 2. Education -->
+            <div class="form-group">
+              <label class="form-label">${this.t("profile_education_label")}</label>
+              <select id="profile-education" class="custom-select">
+                <option value="10th pass" selected>${this.t("profile_education_opt1")}</option>
+                <option value="12th pass">${this.t("profile_education_opt2")}</option>
+                <option value="8th pass">${this.t("profile_education_opt3")}</option>
+              </select>
             </div>
-          </div>
 
-          <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-glass); padding-top: 24px;">
-            <button id="btn-back-welcome" class="btn-secondary">
-              ← ${isGu ? "પાછા" : "Back"}
-            </button>
-            <button id="btn-family-continue" class="btn-primary">
-              <span>${this.t("family_btn_continue")}</span>
-              <span>→</span>
-            </button>
-          </div>
+            <!-- 3. Location -->
+            <div class="form-group">
+              <label class="form-label">${this.t("profile_location_label")}</label>
+              <select id="profile-location" class="custom-select">
+                <option value="Gujarat" selected>${this.t("profile_location_opt1")}</option>
+                <option value="Maharashtra">${this.t("profile_location_opt2")}</option>
+                <option value="Pan-India">${this.t("profile_location_opt3")}</option>
+              </select>
+            </div>
+
+            <!-- 4. Interest -->
+            <div class="form-group">
+              <label class="form-label">${this.t("profile_interest_label")}</label>
+              <select id="profile-interest" class="custom-select">
+                <option value="practical technical work & machinery" selected>${this.t("profile_interest_opt1")}</option>
+                <option value="electrical circuits & solar">${this.t("profile_interest_opt2")}</option>
+                <option value="computers & data">${this.t("profile_interest_opt3")}</option>
+                <option value="automotive & mechanics">${this.t("profile_interest_opt4")}</option>
+                <option value="healthcare & hospital">${this.t("profile_interest_opt5")}</option>
+              </select>
+            </div>
+
+            <!-- 5. Preferred Career Area -->
+            <div class="form-group">
+              <label class="form-label">${this.t("profile_preferred_label")}</label>
+              <select id="profile-preferred" class="custom-select">
+                <option value="Electrician" selected>${this.t("profile_preferred_opt1")}</option>
+                <option value="Solar Technician">${this.t("profile_preferred_opt2")}</option>
+                <option value="CNC Operator">${this.t("profile_preferred_opt3")}</option>
+                <option value="Automotive">${this.t("profile_preferred_opt4")}</option>
+              </select>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-glass); padding-top: 24px; margin-top: 30px;">
+              <button type="button" id="btn-back-welcome" class="btn-secondary">
+                ← ${isGu ? "પાછા" : "Back"}
+              </button>
+              <button type="submit" id="btn-profile-continue" class="btn-primary">
+                <span>${this.t("profile_btn_continue")}</span>
+                <span>→</span>
+              </button>
+            </div>
+          </form>
         </div>
 
-        <div id="samaira-family-container"></div>
+        <div id="samaira-profile-container"></div>
       </div>
     `;
 
-    this.samaira = new SamairaCharacter("samaira-family-container");
-    const speech = isGu
-      ? "વોકેશનલ કારકિર્દીનો નિર્ણય પરિવાર સાથે લેવો શ્રેષ્ઠ રહે છે. 'વિદ્યાર્થી + વાલી' પસંદ કરો જેથી હું તમારા બંનેના પ્રશ્નોનું સમાધાન આપી શકું."
-      : "Choosing a vocational trade is a joint family milestone. 'Student + Parent' allows me to directly address family concerns on income, safety, and respect.";
-    this.samaira.speak(speech, "talking_parents", this.language);
+    this.samaira = new SamairaCharacter("samaira-profile-container");
+    this.samaira.speak(this.t("profile_ask_spoken"), "listening", this.language);
 
     const optStudent = document.getElementById("card-opt-student");
     const optFamily = document.getElementById("card-opt-family");
@@ -397,92 +432,26 @@ class SamairaApp {
     });
 
     document.getElementById("btn-back-welcome")?.addEventListener("click", () => this.navigate("welcome"));
-    document.getElementById("btn-family-continue")?.addEventListener("click", () => this.navigate("profile"));
-  }
 
-  // SCREEN 3: Student Profile
-  renderProfileScreen(container) {
-    const isGu = this.language.includes("gu");
-    container.innerHTML = `
-      <div style="display: grid; grid-template-columns: 1fr 340px; gap: 36px; align-items: start; margin-top: 20px;">
-        <div class="glass-panel step-card" style="margin: 0;">
-          <div class="step-header">
-            <div class="step-number">Step 2 of 3</div>
-            <h2 class="step-title">${this.t("profile_title")}</h2>
-            <p class="step-subtitle">${this.t("profile_sub")}</p>
-          </div>
-
-          <form id="profile-form">
-            <div class="form-group">
-              <label class="form-label">${this.t("profile_education_label")}</label>
-              <select id="profile-education" class="custom-select">
-                <option value="10th pass" selected>${this.t("profile_education_opt1")}</option>
-                <option value="12th pass">${this.t("profile_education_opt2")}</option>
-                <option value="8th pass">${this.t("profile_education_opt3")}</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">${this.t("profile_location_label")}</label>
-              <select id="profile-location" class="custom-select">
-                <option value="Gujarat" selected>${this.t("profile_location_opt1")}</option>
-                <option value="Maharashtra">${this.t("profile_location_opt2")}</option>
-                <option value="Pan-India">${this.t("profile_location_opt3")}</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">${this.t("profile_interest_label")}</label>
-              <select id="profile-interest" class="custom-select">
-                <option value="practical technical work" selected>${this.t("profile_interest_opt1")}</option>
-                <option value="electrical circuits & solar">${this.t("profile_interest_opt2")}</option>
-                <option value="computers & data">${this.t("profile_interest_opt3")}</option>
-                <option value="automotive & mechanics">${this.t("profile_interest_opt4")}</option>
-                <option value="healthcare & hospital">${this.t("profile_interest_opt5")}</option>
-              </select>
-            </div>
-
-            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-glass); padding-top: 24px; margin-top: 30px;">
-              <button type="button" id="btn-back-family" class="btn-secondary">
-                ← ${isGu ? "પાછા" : "Back"}
-              </button>
-              <button type="submit" id="btn-profile-continue" class="btn-primary">
-                <span>${this.t("profile_btn_continue")}</span>
-                <span>→</span>
-              </button>
-            </div>
-          </form>
-        </div>
-
-        <div id="samaira-profile-container"></div>
-      </div>
-    `;
-
-    this.samaira = new SamairaCharacter("samaira-profile-container");
-    const speech = isGu
-      ? "તમારા રસ અને શિક્ષણ અનુસાર, ૧૦મા ધોરણ પછી ઇલેક્ટ્રિકલ અને ટેકનિકલ ટ્રેડ્સમાં કારકિર્દીની ઉત્તમ તકો ઉપલબ્ધ છે!"
-      : "For a student completing 10th with interest in practical technical work, Electrical & technical trades offer high placement demand!";
-    this.samaira.speak(speech, "thoughtful", this.language);
-
-    document.getElementById("btn-back-family")?.addEventListener("click", () => this.navigate("family"));
     document.getElementById("profile-form")?.addEventListener("submit", (e) => {
       e.preventDefault();
-      this.studentProfile.education = document.getElementById("profile-education").value;
-      this.studentProfile.location = document.getElementById("profile-location").value;
-      this.studentProfile.interest = document.getElementById("profile-interest").value;
+      this.studentProfile.education = document.getElementById("profile-education")?.value || "10th pass";
+      this.studentProfile.location = document.getElementById("profile-location")?.value || "Gujarat";
+      this.studentProfile.interest = document.getElementById("profile-interest")?.value || "practical technical work";
+      this.studentProfile.preferred_career = document.getElementById("profile-preferred")?.value || "Electrician";
       this.navigate("careers");
     });
   }
 
-  // SCREEN 4: Career Selection
+  // SCREEN 3: Career Selection ("Thank you. Based on your interests, let's explore some vocational career options together.")
   renderCareersScreen(container) {
     const isGu = this.language.includes("gu");
     container.innerHTML = `
       <div>
         <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
           <div>
-            <div class="step-number">Step 3 of 3</div>
-            <h2 style="font-size: 2.4rem; font-weight: 800; margin-bottom: 8px;">
+            <div class="step-number">Step 2 of 3</div>
+            <h2 style="font-size: 2.3rem; font-weight: 800; margin-bottom: 8px;">
               ${this.t("careers_title")}
             </h2>
             <p style="color: var(--text-muted); font-size: 1.05rem;">
@@ -537,6 +506,13 @@ class SamairaApp {
       </div>
     `;
 
+    // Speak the prompt transition:
+    // "Thank you. Based on your interests, let's explore some vocational career options together."
+    const speech = this.t("careers_spoken_intro");
+    if (this.samaira) {
+      this.samaira.speak(speech, "explaining", this.language);
+    }
+
     document.querySelectorAll(".btn-select-trade").forEach(btn => {
       btn.addEventListener("click", (e) => {
         const cid = e.currentTarget.getAttribute("data-id");
@@ -546,7 +522,7 @@ class SamairaApp {
     });
   }
 
-  // SCREEN 5 & 6: Electrician Workplace Environment + AI Counselling
+  // SCREEN 4: Electrician Workplace Environment + Inside-Scene Samaira + 9 Parent Topic Options
   renderEnvironmentScreen(container) {
     const isGu = this.language.includes("gu");
     const course = this.courses.find(c => c.course_id === this.selectedCourseId) || this.courses[0];
@@ -561,14 +537,14 @@ class SamairaApp {
 
     container.innerHTML = `
       <div>
-        <!-- Environment Stage Container -->
+        <!-- Environment Stage Container with Illustrated Electrical Workplace -->
         <div class="environment-stage">
           <div id="env-bg-container" class="environment-bg-container" style="background-image: url('${bgMap[this.envTab]}');">
             <div class="environment-overlay">
               <!-- Top bar with tabs -->
               <div class="env-top-bar">
                 <div class="env-title-group">
-                  <span class="demo-tag" style="margin-bottom: 6px;">⚡ ${isGu ? "સંપૂર્ણ વર્કપ્લેસ વાતાવરણ" : "Interactive Workplace Scene"}</span>
+                  <span class="demo-tag" style="margin-bottom: 6px;">⚡ ${isGu ? "ઇન્ટરેક્ટિવ કાર્યસ્થળ સિમ્યુલેશન" : "Interactive Workplace Scene"}</span>
                   <h2>${tradeTitle} — ${isGu ? "કાર્યસ્થળ સિમ્યુલેશન" : "Vocational Workplace"}</h2>
                 </div>
 
@@ -588,23 +564,35 @@ class SamairaApp {
                 </div>
               </div>
 
-              <!-- Inside-Scene Samaira Voice & Character Box -->
+              <!-- Inside-Scene Samaira Character & Spoken Voice Box -->
               <div class="scene-samaira-wrapper">
                 <div class="scene-samaira-avatar-card">
-                  <img id="scene-samaira-img" src="assets/samaira/samaira_standing_welcoming.png" alt="Samaira" />
+                  <img id="scene-samaira-img" src="assets/samaira/samaira_standing_welcoming.png" alt="Samaira Character" />
                 </div>
+                
                 <div class="scene-speech-box">
                   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                     <div class="samaira-name-badge">
-                      <span class="status-indicator-dot"></span>
+                      <span class="status-indicator-dot speaking-dot"></span>
                       <span>Samaira AI</span>
+                      <div class="audio-wave">
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                      </div>
                     </div>
-                    <span id="scene-samaira-tag" class="speech-emotion-tag">${isGu ? "સમજાવી રહી છે" : "Explaining"}</span>
+
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <span id="scene-samaira-tag" class="speech-emotion-tag">${this.t("state_explaining")}</span>
+                      <button id="btn-scene-replay" class="speech-mini-action" title="Replay Voice">
+                        🔊
+                      </button>
+                    </div>
                   </div>
+
                   <div id="scene-speech-text" style="font-size: 1.05rem; line-height: 1.6; color: #fff;">
-                    ${isGu 
-                      ? "ઇલેક્ટ્રિશિયન રહેણાંક, કોમર્શિયલ, ઔદ્યોગિક અને મેન્ટેનન્સ ક્ષેત્રોમાં કામ કરે છે. તે માત્ર બલ્બ બદલવાનું કામ નથી, પરંતુ એક કૌશલ્યપૂર્ણ ટેકનિકલ કારકિર્દી છે."
-                      : "Electricians work across residential, commercial, industrial and maintenance environments. It is skilled technical work leading to supervisor roles or independent contracting."}
+                    ${this.t("env_workplace_explanation")}
                   </div>
                 </div>
               </div>
@@ -612,46 +600,76 @@ class SamairaApp {
           </div>
         </div>
 
-        <!-- Dynamic Visualization based on active tab -->
+        <!-- Dynamic Visualization Slot -->
         <div id="env-visualization-slot">
           ${this.envTab === 'growth' ? renderCareerPathway(course, this.language) : ''}
           ${this.envTab === 'income' ? renderDataVisualization(course, this.language) : ''}
         </div>
 
-        <!-- SCREEN 6: Parent Concerns & AI Counselling Interface -->
+        <!-- THE 9 PARENT TOPIC OPTIONS FROM PROMPT -->
         <section class="concerns-section">
           <div class="concerns-heading">
             <div>
-              <h3 style="font-size: 1.8rem; font-weight: 700; margin-bottom: 4px;">
-                ${this.t("counsel_title")}
+              <h3 style="font-size: 1.8rem; font-weight: 700; margin-bottom: 4px; color: #fff;">
+                ${this.t("env_ask_first_title")}
               </h3>
               <p style="color: var(--text-muted); font-size: 0.95rem;">
-                ${this.t("counsel_sub")}
+                ${isGu ? "પરિવારની મુખ્ય ચિંતાઓ સમજવા માટે નીચેનામાંથી વિકલ્પ પસંદ કરો:" : "Select a topic below or ask any unexpected question naturally:"}
               </p>
             </div>
-            <span class="demo-tag">Gemini Intent Engine</span>
+            <span class="demo-tag">9 Core Inquiries</span>
           </div>
 
-          <!-- Parent Concerns Chips Grid (12 Concerns) -->
-          <div class="concerns-grid">
-            ${this.parentConcerns.map(c => `
-              <button class="concern-btn" data-key="${c.key}" data-id="${c.id}" data-q="${isGu ? c.example_question_gu : c.example_question}">
-                <span class="concern-icon">${c.icon}</span>
-                <span>${isGu ? c.name_gu : c.name}</span>
-              </button>
-            `).join("")}
+          <!-- 9 Prominent Parent Option Buttons -->
+          <div class="options-grid-9">
+            <button class="option-btn-9" id="opt-income" data-topic="income">
+              <span class="option-icon-box">💰</span>
+              <span>${this.t("opt_income")}</span>
+            </button>
+            <button class="option-btn-9" id="opt-growth" data-topic="growth">
+              <span class="option-icon-box">📈</span>
+              <span>${this.t("opt_growth")}</span>
+            </button>
+            <button class="option-btn-9" id="opt-placement" data-topic="placement">
+              <span class="option-icon-box">🏢</span>
+              <span>${this.t("opt_placement")}</span>
+            </button>
+            <button class="option-btn-9" id="opt-security" data-topic="security">
+              <span class="option-icon-box">🛡️</span>
+              <span>${this.t("opt_security")}</span>
+            </button>
+            <button class="option-btn-9" id="opt-education" data-topic="education">
+              <span class="option-icon-box">🎓</span>
+              <span>${this.t("opt_education")}</span>
+            </button>
+            <button class="option-btn-9" id="opt-safety" data-topic="safety">
+              <span class="option-icon-box">🦺</span>
+              <span>${this.t("opt_safety")}</span>
+            </button>
+            <button class="option-btn-9" id="opt-environment" data-topic="environment">
+              <span class="option-icon-box">🏭</span>
+              <span>${this.t("opt_environment")}</span>
+            </button>
+            <button class="option-btn-9" id="opt-location" data-topic="location">
+              <span class="option-icon-box">📍</span>
+              <span>${this.t("opt_location")}</span>
+            </button>
+            <button class="option-btn-9" id="opt-something-else" data-topic="something_else">
+              <span class="option-icon-box">💬</span>
+              <span>${this.t("opt_something_else")}</span>
+            </button>
           </div>
 
           <!-- Free-form AI Question Input Box -->
           <div class="question-input-card">
-            <span style="font-size: 1.3rem;">💬</span>
+            <span style="font-size: 1.35rem;">💬</span>
             <input 
               type="text" 
               id="counsel-question-input" 
               class="question-input" 
               placeholder="${this.t("counsel_ask_placeholder")}" 
             />
-            <button id="btn-mic-toggle" class="mic-btn" title="Voice Input">
+            <button id="btn-mic-toggle" class="mic-btn" title="Voice Input (Speech-to-Text)">
               🎤
             </button>
             <button id="btn-counsel-submit" class="btn-primary" style="padding: 10px 22px; font-size: 0.95rem;">
@@ -659,7 +677,7 @@ class SamairaApp {
             </button>
           </div>
 
-          <!-- Sample Suggested Questions -->
+          <!-- Sample Common Questions for Parents -->
           <div class="samples-wrapper">
             <span class="samples-label">${this.t("counsel_sample_prompt")}</span>
             <button class="sample-chip btn-sample-q" data-q="${this.t("counsel_q1")}">
@@ -675,6 +693,9 @@ class SamairaApp {
               ${this.t("counsel_q4")}
             </button>
           </div>
+
+          <!-- Dynamic Follow-up conversational card -->
+          <div id="follow-up-slot"></div>
 
           <!-- Human Counsellor Escalation Banner -->
           <div class="escalate-banner">
@@ -698,7 +719,21 @@ class SamairaApp {
       </div>
     `;
 
-    // Bind Environment Tabs
+    // Samaira's spoken transition when entering Electrician Workplace:
+    // "Great. Let's explore the Electrician career. Instead of simply showing you information on a screen, I'll take you through what this career actually looks like."
+    // Followed by: "Electricians can work in areas such as construction, manufacturing, maintenance, facilities, infrastructure and related technical industries. What would you and your family like to know first?"
+    if (!this.samaira) {
+      this.samaira = new SamairaCharacter("samaira-container-hidden", {});
+    }
+    const transitionSpeech = `${this.t("env_transition_spoken")} ${this.t("env_ask_first_spoken")}`;
+    this.samaira.speak(transitionSpeech, "explaining", this.language);
+
+    // Bind Replay Voice button
+    document.getElementById("btn-scene-replay")?.addEventListener("click", () => {
+      if (this.samaira) this.samaira.replay();
+    });
+
+    // Switch Environment Tabs
     const switchEnvTab = (tab) => {
       this.envTab = tab;
       const bgEl = document.getElementById("env-bg-container");
@@ -713,37 +748,6 @@ class SamairaApp {
         else if (tab === "income") vizSlot.innerHTML = renderDataVisualization(course, this.language);
         else vizSlot.innerHTML = "";
       }
-
-      // Update Samaira explanation inside the scene
-      const sceneImg = document.getElementById("scene-samaira-img");
-      const sceneText = document.getElementById("scene-speech-text");
-      const sceneTag = document.getElementById("scene-samaira-tag");
-
-      if (tab === "workplace") {
-        if (sceneImg) sceneImg.src = "assets/samaira/samaira_standing_welcoming.png";
-        if (sceneTag) sceneTag.textContent = isGu ? "કાર્યસ્થળ" : "Workplace";
-        if (sceneText) sceneText.textContent = isGu 
-          ? "ઇલેક્ટ્રિશિયન રહેણાંક, કોમર્શિયલ, ઔદ્યોગિક અને મેન્ટેનન્સ ક્ષેત્રોમાં કામ કરે છે. તે વાયરિંગ, કંટ્રોલ પેનલ અને ફોલ્ટ ટેસ્ટિંગ જેવા આધુનિક સાધનો વાપરે છે."
-          : "Electricians work across residential, commercial, industrial and maintenance environments. They master wiring, distribution panels, and multimeter diagnostics.";
-      } else if (tab === "growth") {
-        if (sceneImg) sceneImg.src = "assets/samaira/samaira_scene_showing_careers.png";
-        if (sceneTag) sceneTag.textContent = isGu ? "કારકિર્દી પ્રગતિ" : "Career Ladder";
-        if (sceneText) sceneText.textContent = isGu
-          ? "જુઓ, કારકિર્દી પ્રગતિ: એપ્રેન્ટિસથી શરૂ કરી સ્કિલ્ડ ઇલેક્ટ્રિશિયન, સીનિયર ટેકનિશિયન અને છેલ્લે લાઇસન્સ ધારક કોન્ટ્રાક્ટર સુધી પહોંચી શકાય છે!"
-          : "Notice the 5-stage career ladder: advancing from apprentice to skilled technician, site supervisor, and certified electrical contractor!";
-      } else if (tab === "income") {
-        if (sceneImg) sceneImg.src = "assets/samaira/samaira_scene_explaining_data.png";
-        if (sceneTag) sceneTag.textContent = isGu ? "કમાણી વિશ્લેષણ" : "Income Benchmark";
-        if (sceneText) sceneText.textContent = isGu
-          ? `ડેમો ડેટાસેટ મુજબ, શરૂઆતની કમાણી ${course.demo_starting_earnings_monthly} અને અનુભવ સાથે ${course.demo_experienced_earnings_monthly} પ્રતિ માસ થાય છે.`
-          : `According to our Prototype / Demo Dataset, starting monthly earnings are ${course.demo_starting_earnings_monthly}, advancing to ${course.demo_experienced_earnings_monthly} with experience.`;
-      } else if (tab === "safety") {
-        if (sceneImg) sceneImg.src = "assets/samaira/samaira_scene_building_confidence.png";
-        if (sceneTag) sceneTag.textContent = isGu ? "સુરક્ષા નિયમો" : "Safety Standards";
-        if (sceneText) sceneText.textContent = isGu
-          ? "ઇલેક્ટ્રિકલ તાલીમમાં ૧૦૦૦V ઇન્સ્યુલેટેડ ટૂલ્સ, સેફ્ટી શૂઝ, ગ્લોવ્ઝ અને લોકઆઉટ પ્રોટોકોલનું ચુસ્ત પાલન થાય છે, જે કાર્યસ્થળને સુરક્ષિત બનાવે છે."
-          : "Electrical vocational training strictly enforces 1000V rated insulated equipment, dielectric safety boots, flame-resistant PPE, and Lockout/Tagout procedures.";
-      }
     };
 
     document.getElementById("tab-workplace")?.addEventListener("click", () => switchEnvTab("workplace"));
@@ -751,19 +755,46 @@ class SamairaApp {
     document.getElementById("tab-income")?.addEventListener("click", () => switchEnvTab("income"));
     document.getElementById("tab-safety")?.addEventListener("click", () => switchEnvTab("safety"));
 
-    // Concern buttons
-    document.querySelectorAll(".concern-btn").forEach(btn => {
+    // Bind the 9 Parent Option Buttons
+    const handleTopicClick = (topic) => {
+      document.querySelectorAll(".option-btn-9").forEach(b => b.classList.remove("active"));
+      document.getElementById(`opt-${topic}`)?.classList.add("active");
+
+      if (topic === "income") {
+        switchEnvTab("income");
+        this.handleAskQuestion(isGu ? "આ કોર્સ કર્યા પછી કેટલી કમાણી થઈ શકે?" : "How much can my child earn after this course?");
+      } else if (topic === "growth") {
+        switchEnvTab("growth");
+        this.handleAskQuestion(isGu ? "ઇલેક્ટ્રિશિયનનું ભવિષ્ય કેવું હોય છે?" : "What is the future of an electrician?");
+      } else if (topic === "placement") {
+        switchEnvTab("income");
+        this.handleAskQuestion(isGu ? "શું આ કોર્સ પછી નોકરીની તકો મળશે?" : "Will my child get a job after this course?");
+      } else if (topic === "security") {
+        this.handleAskQuestion(isGu ? "શું આ કામની બજારમાં લાંબા ગાળાની સ્થિરતા અને માંગ છે?" : "Is there job security and long-term demand for this work?");
+      } else if (topic === "education") {
+        switchEnvTab("growth");
+        this.handleAskQuestion(isGu ? "શું આ પછી ડિપ્લોમા કે ડિગ્રી આગળ ભણી શકાય?" : "Can they pursue a diploma or degree after this?");
+      } else if (topic === "safety") {
+        switchEnvTab("safety");
+        this.handleAskQuestion(isGu ? "શું આ કામ સલામત છે અને કયા સેફ્ટી નિયમો શીખવવામાં આવે છે?" : "How safe is this work and what protective gear is used?");
+      } else if (topic === "environment") {
+        switchEnvTab("workplace");
+        this.handleAskQuestion(isGu ? "ઇલેક્ટ્રિશિયન કયા પ્રકારના વાતાવરણમાં કામ કરે છે?" : "What kind of workplace will my child work in?");
+      } else if (topic === "location") {
+        this.handleAskQuestion(isGu ? "શું ગુજરાતમાં ઘરની નજીક સ્થાનિક રોજગારની તકો મળશે?" : "Will there be local jobs near our location in Gujarat?");
+      } else if (topic === "something_else") {
+        const qInput = document.getElementById("counsel-question-input");
+        if (qInput) {
+          qInput.focus();
+          qInput.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }
+    };
+
+    document.querySelectorAll(".option-btn-9").forEach(btn => {
       btn.addEventListener("click", (e) => {
-        const q = e.currentTarget.getAttribute("data-q");
-        const key = e.currentTarget.getAttribute("data-key");
-        document.querySelectorAll(".concern-btn").forEach(b => b.classList.remove("active"));
-        e.currentTarget.classList.add("active");
-
-        if (key === "income" || key === "placement") switchEnvTab("income");
-        else if (key === "career_growth" || key === "further_education") switchEnvTab("growth");
-        else if (key === "safety") switchEnvTab("safety");
-
-        this.handleAskQuestion(q);
+        const topic = e.currentTarget.getAttribute("data-topic");
+        handleTopicClick(topic);
       });
     });
 
@@ -777,7 +808,7 @@ class SamairaApp {
       });
     });
 
-    // Submit question
+    // Submit question button & enter key
     const qInput = document.getElementById("counsel-question-input");
     document.getElementById("btn-counsel-submit")?.addEventListener("click", () => {
       if (qInput && qInput.value.trim()) {
@@ -794,8 +825,7 @@ class SamairaApp {
     // Mic button
     document.getElementById("btn-mic-toggle")?.addEventListener("click", () => {
       if (!this.recognition) {
-        // Simulated speech fallback if browser lacks Web Speech API
-        const sampleQuery = isGu ? "આ કોર્સ કર્યા પછી કેટલી કમાણી થઈ શકે?" : "Can my daughter build a good career in this field?";
+        const sampleQuery = isGu ? "આ કોર્સ કર્યા પછી કેટલી કમાણી થઈ શકે?" : "What is the future of an electrician?";
         if (qInput) qInput.value = sampleQuery;
         this.handleAskQuestion(sampleQuery);
         return;
@@ -807,12 +837,12 @@ class SamairaApp {
         try {
           this.recognition.start();
         } catch (err) {
-          console.warn("Speech start issue:", err);
+          console.warn("Speech start notice:", err);
         }
       }
     });
 
-    // Escalation action
+    // Counsellor escalation trigger
     document.getElementById("btn-escalate-action")?.addEventListener("click", () => this.openCounsellorModal());
   }
 
@@ -820,11 +850,14 @@ class SamairaApp {
     const sceneImg = document.getElementById("scene-samaira-img");
     const sceneText = document.getElementById("scene-speech-text");
     const sceneTag = document.getElementById("scene-samaira-tag");
+    const isGu = this.language.includes("gu");
 
-    // Immediate Thinking State
-    if (sceneTag) sceneTag.textContent = this.language.includes("gu") ? "વિચારી રહી છે..." : "Thinking...";
+    // Immediate Attentive / Thinking state
+    if (sceneTag) sceneTag.textContent = this.t("state_thinking");
     if (sceneImg) sceneImg.src = "assets/samaira/samaira_face_thoughtful.png";
-    if (sceneText) sceneText.textContent = this.language.includes("gu") ? "સમાયરા તમારા પ્રશ્નનું વિશ્લેષણ કરી રહી છે..." : "Samaira is analyzing your question against vocational knowledge...";
+    if (sceneText) sceneText.textContent = isGu 
+      ? "સમાયરા તમારા પ્રશ્નનું વિશ્લેષણ કરી રહી છે..." 
+      : "Samaira is analyzing your question against vocational knowledge...";
 
     try {
       const res = await fetch("/api/counsel", {
@@ -841,15 +874,21 @@ class SamairaApp {
       const data = await res.json();
       this.displayCounselAnswer(data);
     } catch (err) {
-      console.warn("API counsel call failed, using intelligent offline fallback:", err);
-      // Client-side instant fallback for smooth uninterrupted demo
-      const isGu = this.language.includes("gu");
+      console.warn("API counsel call notice, executing verified fallback:", err);
+      // Fallback
       const fallback = {
-        answer: isGu 
-          ? "ઇલેક્ટ્રિશિયન ટ્રેડમાં શરૂઆતમાં ₹૧૪,૦૦૦–₹૧૮,૦૦૦ અને અનુભવ સાથે ₹૨૫,૦૦૦–₹૩૫,૦૦૦ પ્રતિ માસ કમાણી થઈ શકે છે. (પ્રોટોટાઇપ ડેમો ડેટાસેટ)."
-          : "According to our Prototype / Demo Dataset, a starting Electrician typically earns ₹14,000–₹18,000 per month, advancing to ₹25,000–₹35,000 with experience.",
-        emotion: "reassuring",
+        spoken_text: isGu 
+          ? "પ્રોટોટાઇપ ડેમો ડેટાસેટ મુજબ, શરૂઆતની કમાણી ચૌદથી અઢાર હજાર રૂપિયા પ્રતિ માસ છે અને અનુભવ સાથે પચીસથી પાંત્રીસ હજાર રૂપિયા સુધી પહોંચે છે."
+          : "According to the prototype data available to me, starting earnings are around fourteen to eighteen thousand rupees per month. With experience, the range shown in our demo dataset is around twenty-five to thirty-five thousand rupees per month.",
+        display_text: isGu
+          ? "પ્રોટોટાઇપ ડેમો ડેટાસેટ મુજબ, શરૂઆતની કમાણી ₹૧૪,૦૦૦–₹૧૮,૦૦૦/માસ અને અનુભવી કમાણી ₹૨૫,૦૦૦–₹૩૫,૦૦૦/માસ દર્શાવેલ છે."
+          : "According to our Prototype / Demo Dataset, starting monthly earnings are ₹14,000–₹18,000, advancing to ₹25,000–₹35,000 with experience.",
+        emotion: "explaining",
         concern_category: "income",
+        visual_card_type: "income",
+        follow_up_question: isGu 
+          ? "તમે ઇચ્છો તો શું હું આવક, કારકિર્દી પ્રગતિ, નોકરીની તકો અથવા બીજું કંઈક સમજાવું?" 
+          : "Would you like me to explain the income, career growth, job opportunities, or something else?",
         requires_human_counsellor: false
       };
       this.displayCounselAnswer(fallback);
@@ -857,9 +896,13 @@ class SamairaApp {
   }
 
   displayCounselAnswer(data) {
+    this.lastAnswerData = data;
     const sceneImg = document.getElementById("scene-samaira-img");
     const sceneText = document.getElementById("scene-speech-text");
     const sceneTag = document.getElementById("scene-samaira-tag");
+    const vizSlot = document.getElementById("env-visualization-slot");
+    const followUpSlot = document.getElementById("follow-up-slot");
+    const course = this.courses.find(c => c.course_id === this.selectedCourseId) || this.courses[0];
     const isGu = this.language.includes("gu");
 
     const emotionMap = {
@@ -868,31 +911,84 @@ class SamairaApp {
       pointing: "assets/samaira/samaira_pose_pointing.png",
       listening: "assets/samaira/samaira_face_listening.png",
       thinking: "assets/samaira/samaira_face_thoughtful.png",
-      happy: "assets/samaira/samaira_face_happy.png"
+      concerned: "assets/samaira/samaira_face_concerned.png",
+      happy: "assets/samaira/samaira_face_happy.png",
+      welcoming: "assets/samaira/samaira_standing_welcoming.png"
     };
 
     if (sceneImg) sceneImg.src = emotionMap[data.emotion] || "assets/samaira/samaira_pose_explaining.png";
-    if (sceneTag) sceneTag.textContent = data.emotion || "Explaining";
-    if (sceneText) sceneText.innerHTML = data.answer;
+    if (sceneTag) {
+      const tagKey = `state_${data.emotion}` in (translations[this.language] || {}) 
+        ? this.t(`state_${data.emotion}`) 
+        : data.emotion;
+      sceneTag.textContent = tagKey;
+    }
+    if (sceneText) {
+      sceneText.innerHTML = data.display_text || data.answer;
+    }
 
-    // Auto-scroll slightly so the speech box is visible
+    // Dynamic Visual Cards (Income, Career Growth Pathway, etc.)
+    if (vizSlot) {
+      if (data.visual_card_type === "career_growth" || data.concern_category === "career_growth") {
+        vizSlot.innerHTML = renderCareerPathway(course, this.language);
+      } else if (data.visual_card_type === "income" || data.concern_category === "income") {
+        vizSlot.innerHTML = renderDataVisualization(course, this.language);
+      }
+    }
+
+    // Conversational Follow-Up Prompt
+    if (followUpSlot) {
+      const followUpText = data.follow_up_question || this.t("follow_up_default");
+      followUpSlot.innerHTML = `
+        <div class="follow-up-card">
+          <div class="follow-up-text">
+            <span>💬</span>
+            <span>${followUpText}</span>
+          </div>
+          <div class="follow-up-chips">
+            <button class="follow-up-chip btn-quick-followup" data-q="${isGu ? 'આ કોર્સ કર્યા પછી કેટલી કમાણી થઈ શકે?' : 'How much can my child earn after this course?'}">
+              💰 ${this.t("opt_income")}
+            </button>
+            <button class="follow-up-chip btn-quick-followup" data-q="${isGu ? 'ઇલેક્ટ્રિશિયનનું ભવિષ્ય કેવું હોય છે?' : 'What is the future of an electrician?'}">
+              📈 ${this.t("opt_growth")}
+            </button>
+            <button class="follow-up-chip btn-quick-followup" data-q="${isGu ? 'શું આ કોર્સ પછી નોકરીની તકો મળશે?' : 'Will my child get a job after this course?'}">
+              🏢 ${this.t("opt_placement")}
+            </button>
+            <button class="follow-up-chip btn-quick-followup" data-q="${isGu ? 'શું આ કામ સલામત છે?' : 'How safe is this work?'}">
+              🦺 ${this.t("opt_safety")}
+            </button>
+          </div>
+        </div>
+      `;
+
+      document.querySelectorAll(".btn-quick-followup").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          const q = e.currentTarget.getAttribute("data-q");
+          this.handleAskQuestion(q);
+        });
+      });
+    }
+
+    // Scroll slightly so the response is visible
     const stage = document.querySelector(".environment-stage");
     if (stage) stage.scrollIntoView({ behavior: "smooth", block: "start" });
 
-    // Voice speak
+    // Speak aloud using TTS with the short natural spoken text
+    const textToSpeak = data.spoken_text || data.answer;
     if (this.samaira) {
-      this.samaira.speak(data.answer, data.emotion, this.language);
+      this.samaira.speak(textToSpeak, data.emotion, this.language);
     }
 
-    // If human counsellor required
+    // If unverified or requires human counsellor, offer escalation
     if (data.requires_human_counsellor) {
       setTimeout(() => {
         this.openCounsellorModal();
-      }, 1500);
+      }, 1600);
     }
   }
 
-  // SCREEN 7: Admin Dashboard
+  // SCREEN 5: Admin Dashboard
   async renderAdminScreen(container) {
     container.innerHTML = `
       <div style="text-align: center; padding: 60px 0;">
@@ -917,9 +1013,9 @@ class SamairaApp {
         after: { negative: 19, neutral: 29, positive: 52 }
       },
       recent_queries: [
-        { question: "Can my daughter build a good career in this field?", trade: "Electrician", concern: "social_perception", sentiment: "positive" },
+        { question: "What is the future of an electrician?", trade: "Electrician", concern: "career_growth", sentiment: "positive" },
         { question: "આ કોર્સ કર્યા પછી કેટલી કમાણી થઈ શકે?", trade: "Electrician", concern: "income", sentiment: "positive" },
-        { question: "Is this work safe for a beginner?", trade: "Electrician", concern: "safety", sentiment: "neutral" }
+        { question: "My daughter doesn't want to work in an office. Would electrician be suitable for her?", trade: "Electrician", concern: "social_perception", sentiment: "positive" }
       ],
       escalations: [
         { name: "Ramesh Patel", phone: "+91 98250 12345", type: "Scheduled Session", status: "Pending Confirmation" }

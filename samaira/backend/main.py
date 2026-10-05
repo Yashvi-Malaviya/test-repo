@@ -105,9 +105,10 @@ SESSION_STATE = {
 
 # Request Models
 class StudentProfile(BaseModel):
-    education: Optional[str] = "10th"
+    education: Optional[str] = "10th pass"
     location: Optional[str] = "Gujarat"
     interest: Optional[str] = "practical technical work"
+    preferred_career: Optional[str] = "Electrician"
 
 class CounselRequest(BaseModel):
     question: str
