@@ -128,6 +128,31 @@ export const translations = {
     income_disclaimer_badge: "Prototype / Demo Dataset",
     income_disclaimer_text: "Clear Notice: Figures are synthetic demonstration values for this prototype and do not represent official government statistics.",
 
+    // Spoken Audio Statements for Actions & Tabs
+    lang_switch_spoken: "Switched to English. Hello! I am Samaira, your AI career counsellor. How can I guide you and your family today?",
+    family_chosen_family: "Welcome to both the student and parents! We will explore income, safety, and long-term career growth together.",
+    family_chosen_student: "Welcome! Let's explore hands-on vocational courses matching your passions and practical skills.",
+    trade_selected_spoken: "Let's explore the Electrician career! Step inside the interactive workplace simulation.",
+    env_tab_workplace_spoken: "Here is the interactive electrician workshop. Students train with insulated tools, distribution panels, and diagnostic instruments in a safe environment.",
+    env_tab_growth_spoken: "Becoming an electrician does not mean staying at the same level. Technicians advance through a five-stage career ladder up to site supervisor and licensed contractor.",
+    env_tab_income_spoken: "According to our demo dataset, starting earnings are around fourteen to eighteen thousand rupees per month, advancing to thirty-five thousand rupees or more with experience.",
+    env_tab_safety_spoken: "Workplace safety is strictly enforced. Technicians use one-thousand-volt rated insulated tools, dielectric footwear, and strict lockout protocols.",
+    opt_something_else_spoken: "You can ask me any question or parental concern. Feel free to type below or click the microphone to speak.",
+    modal_booked_spoken: "Thank you! Your counsellor session is booked. A certified vocational counsellor will call your family within 24 hours.",
+    admin_spoken_intro: "Welcome to the Admin Analytics Dashboard, tracking real-time family concerns, sentiment shifts, and counsellor escalations.",
+
+    // Direct Action Buttons on Image Background
+    scene_action_what_to_know: "What do you want to know? (9 Topics)",
+    scene_action_course_details: "Course Details & Eligibility",
+    scene_action_career_ladder: "Career Growth Ladder",
+    scene_action_income: "Income & Earnings",
+    scene_action_safety: "Safety & Protection",
+    scene_action_ask: "Ask Custom Question",
+    scene_jump_options_spoken: "Here are the nine core topics most asked by families: Income, Career Growth, Job Opportunities, Safety, and more. Tap any button to explore.",
+    scene_jump_details_spoken: "The Electrician trade is a two-year NSQF Level 4 vocational course open to tenth pass students with seventy percent practical workshop training.",
+    scene_jump_ask_spoken: "You can type any question or parental concern in this box, or tap the microphone to speak.",
+    course_details_modal_title: "Electrician Trade — Detailed Course Overview",
+
     // Escalation Modal
     escalate_title: "Personalized Support",
     escalate_sub: "If reliable information is unavailable or you need specific guidance on institutes, admission forms, or financial aid:",
@@ -286,7 +311,30 @@ export const translations = {
     income_placement_label: "પ્લેસમેન્ટ સહાયતા દર",
     income_placement_val: "૭૬%",
     income_disclaimer_badge: "પ્રોટોટાઇપ / ડેમો ડેટાસેટ",
-    income_disclaimer_text: "સ્પષ્ટ સૂચના: આ આંકડા પ્રોટોટાઇપ ડેમો ડેટાસેટ આધારિત છે અને કોઈ સત્તાવાર સરકારી આંકડા નથી.",
+    // Spoken Audio Statements for Actions & Tabs (Gujarati)
+    lang_switch_spoken: "ગુજરાતી ભાષા પસંદ થઈ ગઈ છે. નમસ્તે! હું સમાયરા છું. હું તમને અને તમારા પરિવારને માર્ગદર્શન આપવા તૈયાર છું.",
+    family_chosen_family: "વિદ્યાર્થી અને વાલી બંનેનું સ્વાગત છે! આપણે સાથે મળીને આવક, સલામતી અને ભવિષ્યની પ્રગતિ વિશે ચર્ચા કરીશું.",
+    family_chosen_student: "સ્વાગત છે! ચાલો તમારા રસ અને કૌશલ્યને અનુરૂપ શ્રેષ્ઠ વ્યાવસાયિક કોર્સ વિશે જાણીએ.",
+    trade_selected_spoken: "ચાલો આપણે ઇલેક્ટ્રિશિયન કારકિર્દી વિશે જાણીએ! ઇન્ટરેક્ટિવ કાર્યસ્થળ સિમ્યુલેશનમાં પ્રવેશ કરો.",
+    env_tab_workplace_spoken: "આ છે ઇન્ટરેક્ટિવ ઇલેક્ટ્રિશિયન વર્કશોપ. વિદ્યાર્થીઓ સુરક્ષિત વાતાવરણમાં ઇન્સ્યુલેટેડ સાધનો, ડિસ્ટ્રિબ્યુશન પેનલ અને ટેસ્ટર્સ સાથે પ્રેક્ટિકલ તાલીમ મેળવે છે.",
+    env_tab_growth_spoken: "ઇલેક્ટ્રિશિયન બનવાનો અર્થ એ નથી કે તમે આખી કારકિર્દી એક જ સ્તર પર રહો. એપ્રેન્ટિસથી શરૂ કરીને સીનિયર ટેકનિશિયન, સુપરવાઇઝર અને સરકારી લાયસન્સ કોન્ટ્રાક્ટર સુધી આગળ વધી શકાય છે.",
+    env_tab_income_spoken: "પ્રોટોટાઇપ ડેમો ડેટાસેટ મુજબ, શરૂઆતની કમાણી ચૌદથી અઢાર હજાર રૂપિયા પ્રતિ માસ છે અને અનુભવ સાથે પચીસથી પાંત્રીસ હજાર રૂપિયા સુધી પહોંચે છે.",
+    env_tab_safety_spoken: "કાર્યસ્થળ સુરક્ષા એ સૌથી પહેલો નિયમ છે. એક હજાર વોલ્ટ ઇન્સ્યુલેટેડ ટૂલ્સ, સેફ્ટી શૂઝ અને લોકઆઉટ પ્રોટોકોલ દ્વારા સંપૂર્ણ સુરક્ષા આપવામાં આવે છે.",
+    opt_something_else_spoken: "તમે મને કોઈપણ પ્રશ્ન અથવા પારિવારિક શંકા પૂછી શકો છો. નીચે આપેલા બોક્સમાં ટાઇપ કરો અથવા માઇક્રોફોન પર ક્લિક કરીને બોલો.",
+    modal_booked_spoken: "ધન્યવાદ! તમારી કાઉન્સેલર સેશન વિનંતી નોંધાઈ ગઈ છે. અમારા પ્રમાણિત વોકેશનલ કાઉન્સેલર ચોવીસ કલાકમાં તમારા પરિવારનો સંપર્ક કરશે.",
+    admin_spoken_intro: "એડમિન એનાલિટિક્સ ડેશબોર્ડમાં આપનું સ્વાગત છે, જ્યાં પરિવારોની ચિંતાઓ અને કાઉન્સેલિંગ ડેટાનું લાઈવ વિશ્લેષણ જોઈ શકાય છે.",
+
+    // Direct Action Buttons on Image Background (Gujarati)
+    scene_action_what_to_know: "તમે શું જાણવા માંગો છો? (૯ પ્રશ્નો)",
+    scene_action_course_details: "કોર્સ વિગતો અને યોગ્યતા",
+    scene_action_career_ladder: "કારકિર્દી પ્રગતિ સીડી",
+    scene_action_income: "કમાણી અને પગાર",
+    scene_action_safety: "સલામતી અને સુરક્ષા",
+    scene_action_ask: "પોતાનો પ્રશ્ન પૂછો",
+    scene_jump_options_spoken: "અહીં પરિવારો દ્વારા સૌથી વધુ પૂછાતા ૯ મુખ્ય વિષયો છે: આવક, પ્રગતિ, નોકરીની તકો, સુરક્ષા અને વધુ. વિગતો જાણવા કોઈપણ બટન પર ક્લિક કરો.",
+    scene_jump_details_spoken: "ઇલેક્ટ્રિશિયન ટ્રેડ એ ૧૦મું પાસ વિદ્યાર્થીઓ માટે ૨-વર્ષીય NSQF લેવલ ૪ કોર્સ છે જેમાં ૭૦% પ્રેક્ટિકલ તાલીમ સામેલ છે.",
+    scene_jump_ask_spoken: "તમે આ બોક્સમાં કોઈપણ પ્રશ્ન અથવા પારિવારિક શંકા ટાઇપ કરી શકો છો અથવા બોલવા માટે માઇક્રોફોન પર ટેપ કરો.",
+    course_details_modal_title: "ઇલેક્ટ્રિશિયન ટ્રેડ — સંપૂર્ણ કોર્સ વિગતો",
 
     // Escalation Modal
     escalate_title: "વ્યક્તિગત સહાયતા",

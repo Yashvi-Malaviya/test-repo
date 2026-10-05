@@ -62,13 +62,43 @@ export class SamairaCharacter {
     };
 
     this.initVoices();
+    this.setupAudioUnlock();
     this.render();
+  }
+
+  setupAudioUnlock() {
+    if (typeof window === "undefined") return;
+    const unlock = () => {
+      if (this.speechSynthesis) {
+        this.voices = this.speechSynthesis.getVoices() || [];
+        if (this.speechSynthesis.paused) {
+          try { this.speechSynthesis.resume(); } catch (e) {}
+        }
+        if (this.pendingUtterance && this.voices.length > 0) {
+          const { text, emotion, language } = this.pendingUtterance;
+          this.pendingUtterance = null;
+          this.speak(text, emotion, language);
+        }
+      }
+      window.removeEventListener("click", unlock);
+      window.removeEventListener("touchstart", unlock);
+    };
+    window.addEventListener("click", unlock, { once: true, passive: true });
+    window.addEventListener("touchstart", unlock, { once: true, passive: true });
   }
 
   initVoices() {
     if (!this.speechSynthesis) return;
     const load = () => {
-      this.voices = this.speechSynthesis.getVoices() || [];
+      const v = this.speechSynthesis.getVoices() || [];
+      if (v.length > 0) {
+        this.voices = v;
+        if (this.pendingUtterance) {
+          const { text, emotion, language } = this.pendingUtterance;
+          this.pendingUtterance = null;
+          this.speak(text, emotion, language);
+        }
+      }
     };
     load();
     if (this.speechSynthesis.onvoiceschanged !== undefined) {
@@ -76,49 +106,108 @@ export class SamairaCharacter {
     }
   }
 
+  attachTo(containerId) {
+    const el = document.getElementById(containerId);
+    if (el) {
+      this.container = el;
+      this.render();
+      this.updateVisuals();
+    }
+  }
+
   getBestVoice(language) {
     if (!this.voices || this.voices.length === 0) {
       if (this.speechSynthesis) this.voices = this.speechSynthesis.getVoices() || [];
     }
+    if (!this.voices || this.voices.length === 0) return null;
 
-    const isGu = language.includes("gu");
+    const isGu = language && language.toLowerCase().includes("gu");
+
+    // Known female names to match:
+    const femaleKeywords = [
+      "zira", "heera", "neerja", "veena", "priya", "swara", "kalpana",
+      "jenny", "aria", "sonia", "samantha", "victoria", "karen", "female",
+      "woman", "girl", "natasha", "libby", "clara", "emma", "amy", "joanna"
+    ];
+    // Male names to strictly blacklist:
+    const maleKeywords = [
+      "david", "mark", "george", "male", "ravi", "richard", "james", "guy",
+      "stefan", "paul", "matthew", "brian", "justin", "russell"
+    ];
+
+    const isMale = (v) => {
+      const name = (v.name || "").toLowerCase();
+      return maleKeywords.some(m => name.includes(m));
+    };
+
+    const isFemale = (v) => {
+      const name = (v.name || "").toLowerCase();
+      return femaleKeywords.some(f => name.includes(f));
+    };
 
     if (isGu) {
+      // 1. Direct Gujarati voice
       const guVoice = this.voices.find(v => 
         (v.lang && (v.lang.toLowerCase().includes("gu") || v.lang.toLowerCase() === "gu-in")) ||
         (v.name && v.name.toLowerCase().includes("gujarati"))
       );
       if (guVoice) return guVoice;
 
+      // 2. Hindi female voice (Swara, Kalpana)
+      const hiFemale = this.voices.find(v => 
+        (v.lang && (v.lang.toLowerCase().includes("hi") || v.lang.toLowerCase() === "hi-in")) && isFemale(v)
+      );
+      if (hiFemale) return hiFemale;
+
+      // 3. Any Hindi voice
       const hiVoice = this.voices.find(v => 
-        (v.lang && v.lang.toLowerCase().includes("hi")) ||
-        (v.name && (v.name.toLowerCase().includes("hindi") || v.name.toLowerCase().includes("kalpana") || v.name.toLowerCase().includes("swara")))
+        (v.lang && (v.lang.toLowerCase().includes("hi") || v.lang.toLowerCase() === "hi-in")) ||
+        (v.name && v.name.toLowerCase().includes("hindi"))
       );
       if (hiVoice) return hiVoice;
 
-      const inVoice = this.voices.find(v => 
-        (v.lang && v.lang.toLowerCase().includes("en-in")) ||
-        (v.name && (v.name.toLowerCase().includes("india") || v.name.toLowerCase().includes("heera") || v.name.toLowerCase().includes("neerja")))
+      // 4. Indian English female
+      const inFemale = this.voices.find(v => 
+        (v.lang && v.lang.toLowerCase().includes("en-in")) && isFemale(v)
       );
-      if (inVoice) return inVoice;
+      if (inFemale) return inFemale;
+
+      // 5. Any female voice (Zira, etc.)
+      const femaleFallback = this.voices.find(v => isFemale(v));
+      if (femaleFallback) return femaleFallback;
+
+      return this.voices.find(v => !isMale(v)) || this.voices[0];
     } else {
-      const indianVoice = this.voices.find(v => 
-        (v.lang && v.lang.toLowerCase() === "en-in") ||
-        (v.name && (
-          v.name.toLowerCase().includes("heera") ||
-          v.name.toLowerCase().includes("neerja") ||
-          v.name.toLowerCase().includes("veena") ||
-          v.name.toLowerCase().includes("priya") ||
-          v.name.toLowerCase().includes("india")
-        ))
+      // ENGLISH: STRICT FEMALE VOICE!
+      // 1. Indian English Female voice (Heera, Neerja, Veena, Priya)
+      const inFemale = this.voices.find(v => 
+        v.lang && v.lang.toLowerCase().includes("en-in") && isFemale(v)
       );
-      if (indianVoice) return indianVoice;
+      if (inFemale) return inFemale;
 
-      const enVoice = this.voices.find(v => v.lang && v.lang.startsWith("en"));
-      if (enVoice) return enVoice;
+      // 2. High quality natural English Female voice (Zira, Jenny, Aria, Sonia, Google US/UK Female)
+      const enFemale = this.voices.find(v => 
+        v.lang && v.lang.toLowerCase().startsWith("en") && isFemale(v)
+      );
+      if (enFemale) return enFemale;
+
+      // 3. ANY voice with female keyword anywhere
+      const anyFemale = this.voices.find(v => isFemale(v));
+      if (anyFemale) return anyFemale;
+
+      // 4. Any English voice that is NOT male
+      const nonMaleEn = this.voices.find(v => 
+        v.lang && v.lang.toLowerCase().startsWith("en") && !isMale(v)
+      );
+      if (nonMaleEn) return nonMaleEn;
+
+      // 5. Explicit check for Zira on Windows
+      const zira = this.voices.find(v => (v.name || "").toLowerCase().includes("zira"));
+      if (zira) return zira;
+
+      // 6. Non-male voice fallback
+      return this.voices.find(v => !isMale(v)) || this.voices[0] || null;
     }
-
-    return null;
   }
 
   setState(state, emotion = null) {
@@ -128,6 +217,7 @@ export class SamairaCharacter {
   }
 
   speak(text, emotion = "explaining", language = "en-IN") {
+    if (!text) return;
     this.lastSpokenText = text;
     this.lastLanguage = language;
     this.speechText = text;
@@ -141,54 +231,103 @@ export class SamairaCharacter {
         this.isSpeaking = false;
         this.currentState = "idle";
         this.updateVisuals();
-      }, Math.min(Math.max(text.length * 45, 2000), 5000));
+      }, Math.min(Math.max(text.length * 40, 1800), 4500));
       return;
     }
 
-    try {
-      this.speechSynthesis.cancel();
+    // If voices are not yet ready, defer to pendingUtterance
+    if (!this.voices || this.voices.length === 0) {
+      this.voices = this.speechSynthesis.getVoices() || [];
+      if (this.voices.length === 0) {
+        this.pendingUtterance = { text, emotion, language };
+        return;
+      }
+    }
 
+    try {
+      // Resume if browser suspended TTS
+      if (this.speechSynthesis.paused) {
+        try { this.speechSynthesis.resume(); } catch (e) {}
+      }
+      if (this.speechSynthesis.speaking || this.speechSynthesis.pending) {
+        this.speechSynthesis.cancel();
+      }
+
+      const isGu = language && language.toLowerCase().includes("gu");
+
+      // Format text phonetically for natural, clear pronunciation
       const cleanText = text
         .replace(/[*#_`~]/g, "")
         .replace(/•/g, "")
-        .replace(/₹/g, "rupees ")
+        .replace(/₹\s*(\d+)/g, isGu ? "$1 રૂપિયા" : "$1 rupees")
+        .replace(/₹/g, isGu ? "રૂપિયા " : "rupees ")
+        .replace(/(\d+),(\d+)/g, "$1$2")
         .replace(/\s+/g, " ")
         .trim();
 
       const utterance = new SpeechSynthesisUtterance(cleanText);
-      const isGu = language.includes("gu");
-
-      utterance.lang = isGu ? "gu-IN" : "en-IN";
       const selectedVoice = this.getBestVoice(language);
+
       if (selectedVoice) {
         utterance.voice = selectedVoice;
+        utterance.lang = selectedVoice.lang || (isGu ? "gu-IN" : "en-US");
+      } else {
+        utterance.lang = isGu ? "gu-IN" : "en-US";
       }
 
-      utterance.rate = isGu ? 0.90 : 0.92;
-      utterance.pitch = isGu ? 1.02 : 1.05;
+      // FEMALE PITCH & LIVELY SPEED:
+      // For English: pitch 1.18 gives a distinctly warm, pleasant, and feminine counselling tone!
+      utterance.pitch = isGu ? 1.12 : 1.18;
+      utterance.rate = isGu ? 1.06 : 1.08;
+
+      // Prevent garbage collection bug in Chromium
+      if (typeof window !== "undefined") {
+        window._samairaActiveUtterances = window._samairaActiveUtterances || new Set();
+        window._samairaActiveUtterances.add(utterance);
+      }
 
       utterance.onend = () => {
+        if (typeof window !== "undefined" && window._samairaActiveUtterances) {
+          window._samairaActiveUtterances.delete(utterance);
+        }
         this.isSpeaking = false;
         this.currentState = "idle";
         this.updateVisuals();
       };
 
       utterance.onerror = (e) => {
-        console.warn("Speech synthesis notice:", e);
+        if (typeof window !== "undefined" && window._samairaActiveUtterances) {
+          window._samairaActiveUtterances.delete(utterance);
+        }
+        if (e.error !== "canceled" && e.error !== "interrupted") {
+          console.warn("Speech synthesis notice:", e);
+        }
         this.isSpeaking = false;
         this.currentState = "idle";
         this.updateVisuals();
       };
 
       this.currentUtterance = utterance;
-      this.speechSynthesis.speak(utterance);
+
+      // 60ms delay ensures audio buffer reset and prevents Chromium cancel-before-speak race bug
+      setTimeout(() => {
+        try {
+          if (this.speechSynthesis.paused) this.speechSynthesis.resume();
+          this.speechSynthesis.speak(utterance);
+        } catch (err) {
+          console.warn("Speech synthesis speak call error:", err);
+          this.isSpeaking = false;
+          this.currentState = "idle";
+          this.updateVisuals();
+        }
+      }, 60);
     } catch (err) {
       console.warn("Speech synthesis trigger error:", err);
       setTimeout(() => {
         this.isSpeaking = false;
         this.currentState = "idle";
         this.updateVisuals();
-      }, 3000);
+      }, 2500);
     }
   }
 
@@ -344,6 +483,30 @@ export class SamairaCharacter {
       } else {
         bubbleWrapper.style.display = "none";
       }
+    }
+
+    // Sync workplace environment inside-scene character & dialogue box if present
+    const sceneImg = document.getElementById("scene-samaira-img");
+    const sceneTag = document.getElementById("scene-samaira-tag");
+    const sceneSpeech = document.getElementById("scene-speech-text");
+    const sceneWave = document.querySelector(".scene-speech-box .audio-wave");
+    const sceneDot = document.querySelector(".scene-speech-box .status-indicator-dot");
+
+    if (sceneImg) {
+      sceneImg.src = this.getImageForState();
+    }
+    if (sceneTag) {
+      sceneTag.textContent = this.getEmotionLabel();
+    }
+    if (sceneSpeech && this.speechText) {
+      sceneSpeech.innerHTML = this.speechText;
+    }
+    if (sceneWave) {
+      sceneWave.style.display = this.isSpeaking ? "flex" : "none";
+    }
+    if (sceneDot) {
+      if (this.isSpeaking) sceneDot.classList.add("speaking-dot");
+      else sceneDot.classList.remove("speaking-dot");
     }
   }
 }
