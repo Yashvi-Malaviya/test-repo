@@ -59,7 +59,6 @@ class SamairaApp {
       console.warn("Could not fetch from backend, attempting local data load...", e);
     }
 
-    // Fallback to static JSON file if API not reached
     if (!this.courses || this.courses.length === 0) {
       try {
         const localRes = await fetch("data/vocational_courses.json");
@@ -95,7 +94,7 @@ class SamairaApp {
       };
 
       this.recognition.onerror = (event) => {
-        console.warn("Speech recognition error:", event.error);
+        console.warn("Speech recognition notice:", event.error);
         this.isRecording = false;
         this.updateMicVisuals(false);
       };
@@ -116,7 +115,6 @@ class SamairaApp {
   }
 
   bindGlobalEvents() {
-    // Nav links
     document.getElementById("nav-brand")?.addEventListener("click", () => this.navigate("welcome"));
     document.getElementById("nav-home-btn")?.addEventListener("click", () => this.navigate("welcome"));
     document.getElementById("nav-trades-btn")?.addEventListener("click", () => this.navigate("careers"));
@@ -124,7 +122,6 @@ class SamairaApp {
     document.getElementById("nav-admin-btn")?.addEventListener("click", () => this.navigate("admin"));
     document.getElementById("nav-escalate-btn")?.addEventListener("click", () => this.openCounsellorModal());
 
-    // Language switcher
     document.getElementById("lang-en-btn")?.addEventListener("click", () => this.setLanguage("en-IN"));
     document.getElementById("lang-gu-btn")?.addEventListener("click", () => this.setLanguage("gu-IN"));
   }
@@ -216,7 +213,6 @@ class SamairaApp {
         tabSession?.classList.remove("active");
       });
 
-      // Submit escalation form
       document.getElementById("escalation-form")?.addEventListener("submit", async (e) => {
         e.preventDefault();
         const name = document.getElementById("escalation-name")?.value;
@@ -238,8 +234,8 @@ class SamairaApp {
 
         if (statusBox) {
           statusBox.style.display = "block";
-          statusBox.style.background = "rgba(16, 185, 129, 0.2)";
-          statusBox.style.color = "#34d399";
+          statusBox.style.background = "#ecfdf5";
+          statusBox.style.color = "#047857";
           statusBox.style.border = "1px solid #10b981";
           statusBox.textContent = this.t("modal_success");
         }
@@ -269,48 +265,54 @@ class SamairaApp {
     this.renderModal();
   }
 
-  // SCREEN 1: Welcome & Natural Greeting by Samaira
+  // SCREEN 1: Welcome Screen with Samaira in the MIDDLE performing like an animated character
   renderWelcomeScreen(container) {
     const isGu = this.language.includes("gu");
     container.innerHTML = `
-      <div class="welcome-grid">
-        <div class="welcome-content">
-          <div class="badge-row">
-            <span class="demo-tag">SIH Problem Statement 26241</span>
-            <span class="feature-pill">✨ ${this.t("welcome_badge_ai")}</span>
-            <span class="feature-pill">🌐 ${this.t("welcome_badge_multilingual")}</span>
-          </div>
-
-          <h1 class="welcome-title">
-            ${this.t("welcome_greeting")}
-          </h1>
-
-          <p class="welcome-desc">
-            ${this.t("welcome_sub")}
-          </p>
-
-          <div class="action-row">
-            <button id="btn-start-counselling" class="btn-primary">
-              <span>🚀</span>
-              <span>${this.t("welcome_btn_start")}</span>
-            </button>
-            <button id="btn-explore-trades" class="btn-secondary">
-              <span>🔍</span>
-              <span>${this.t("welcome_btn_explore")}</span>
-            </button>
-          </div>
-
-          <div style="margin-top: 24px; display: flex; gap: 16px; align-items: center; border-top: 1px solid var(--border-glass); padding-top: 18px;">
-            <img src="assets/samaira/samaira_quote_bubble.png" style="max-height: 52px; border-radius: 8px;" alt="Samaira Badge" />
-            <div style="font-size: 0.88rem; color: var(--text-dim); line-height: 1.5;">
-              ${isGu 
-                ? "વિદ્યાર્થીઓ અને વાલીઓ માટે સલામત, પ્રમાણિત અને વ્યવહારુ વોકેશનલ માર્ગદર્શન." 
-                : "Empathetic, data-backed career guidance designed specifically for students and parents."}
-            </div>
-          </div>
+      <div class="welcome-hero-centered">
+        <!-- Top Badges -->
+        <div class="hero-top-badges">
+          <span class="demo-tag">SIH Problem Statement 26241</span>
+          <span class="feature-pill">✨ ${this.t("welcome_badge_ai")}</span>
+          <span class="feature-pill">🌐 ${this.t("welcome_badge_multilingual")}</span>
+          <span class="feature-pill">👨‍👩‍👧 ${this.t("welcome_badge_family")}</span>
         </div>
 
-        <div id="samaira-welcome-container"></div>
+        <!-- Greeting Heading -->
+        <h1 class="welcome-title-centered">
+          ${this.t("welcome_greeting")}
+        </h1>
+
+        <!-- Subtitle -->
+        <p class="welcome-sub-centered">
+          ${this.t("welcome_sub")}
+        </p>
+
+        <!-- SAMAIRA IN THE MIDDLE - PERFORMING AS AN ANIMATED CHARACTER -->
+        <div id="samaira-welcome-container" class="samaira-middle-wrapper"></div>
+
+        <!-- Centered Action Buttons below her -->
+        <div class="action-row-centered">
+          <button id="btn-start-counselling" class="btn-primary" style="padding: 14px 34px; font-size: 1.05rem;">
+            <span>🚀</span>
+            <span>${this.t("welcome_btn_start")}</span>
+          </button>
+          <button id="btn-explore-trades" class="btn-secondary" style="padding: 14px 30px; font-size: 1.05rem;">
+            <span>🔍</span>
+            <span>${this.t("welcome_btn_explore")}</span>
+          </button>
+        </div>
+
+        <!-- Quick Inquiries Pills -->
+        <div class="hero-topics-row">
+          <span class="hero-topics-label">${isGu ? "તમે પૂછી શકો છો:" : "Ask Samaira about:"}</span>
+          <span class="hero-topic-chip">💰 ${this.t("opt_income")}</span>
+          <span class="hero-topic-chip">📈 ${this.t("opt_growth")}</span>
+          <span class="hero-topic-chip">🏢 ${this.t("opt_placement")}</span>
+          <span class="hero-topic-chip">🦺 ${this.t("opt_safety")}</span>
+          <span class="hero-topic-chip">🎓 ${this.t("opt_education")}</span>
+          <span class="hero-topic-chip">📍 ${this.t("opt_location")}</span>
+        </div>
       </div>
     `;
 
@@ -326,7 +328,10 @@ class SamairaApp {
   renderProfileScreen(container) {
     const isGu = this.language.includes("gu");
     container.innerHTML = `
-      <div style="display: grid; grid-template-columns: 1fr 340px; gap: 36px; align-items: start; margin-top: 20px;">
+      <div style="max-width: 820px; margin: 0 auto;">
+        <!-- Samaira in the Middle guiding the questions -->
+        <div id="samaira-profile-container" style="margin-bottom: 24px;"></div>
+
         <div class="glass-panel step-card" style="margin: 0;">
           <div class="step-header">
             <div class="step-number">Step 1 of 3</div>
@@ -338,7 +343,7 @@ class SamairaApp {
             <!-- 1. Who is with me today -->
             <div class="form-group">
               <label class="form-label">${this.t("family_question")}</label>
-              <div class="family-options-grid" style="margin-bottom: 16px;">
+              <div class="family-options-grid">
                 <div id="card-opt-family" class="selection-card ${this.familyType === 'family' ? 'selected' : ''}">
                   <span class="selection-badge">${this.t("family_opt_family_badge")}</span>
                   <div class="selection-icon">👨‍👩‍👧</div>
@@ -408,8 +413,6 @@ class SamairaApp {
             </div>
           </form>
         </div>
-
-        <div id="samaira-profile-container"></div>
       </div>
     `;
 
@@ -448,17 +451,14 @@ class SamairaApp {
     const isGu = this.language.includes("gu");
     container.innerHTML = `
       <div>
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
-          <div>
-            <div class="step-number">Step 2 of 3</div>
-            <h2 style="font-size: 2.3rem; font-weight: 800; margin-bottom: 8px;">
-              ${this.t("careers_title")}
-            </h2>
-            <p style="color: var(--text-muted); font-size: 1.05rem;">
-              ${this.t("careers_sub")}
-            </p>
-          </div>
-          <span class="demo-tag">8 High-Growth Sectors</span>
+        <div style="text-align: center; margin-bottom: 30px;">
+          <div class="step-number">Step 2 of 3</div>
+          <h2 style="font-size: 2.4rem; font-weight: 800; margin-bottom: 8px;">
+            ${this.t("careers_title")}
+          </h2>
+          <p style="color: var(--text-muted); font-size: 1.05rem; max-width: 700px; margin: 0 auto;">
+            ${this.t("careers_sub")}
+          </p>
         </div>
 
         <div class="careers-grid">
@@ -491,12 +491,12 @@ class SamairaApp {
                     </div>
                     <div class="stat-item">
                       <span class="stat-label">${this.t("careers_card_placement")}</span>
-                      <span class="stat-value" style="color: var(--accent-cyan);">${course.demo_placement_rate}</span>
+                      <span class="stat-value" style="color: var(--primary);">${course.demo_placement_rate}</span>
                     </div>
                   </div>
                 </div>
 
-                <button class="btn-primary btn-select-trade" data-id="${course.course_id}" style="width: 100%; justify-content: center; font-size: 0.92rem; padding: 12px;">
+                <button class="btn-primary btn-select-trade" data-id="${course.course_id}" style="width: 100%; justify-content: center; font-size: 0.95rem; padding: 12px;">
                   ${isFeatured ? `⚡ ${this.t("careers_btn_enter")}` : `Explore ${title}`}
                 </button>
               </div>
@@ -506,8 +506,6 @@ class SamairaApp {
       </div>
     `;
 
-    // Speak the prompt transition:
-    // "Thank you. Based on your interests, let's explore some vocational career options together."
     const speech = this.t("careers_spoken_intro");
     if (this.samaira) {
       this.samaira.speak(speech, "explaining", this.language);
@@ -522,7 +520,7 @@ class SamairaApp {
     });
   }
 
-  // SCREEN 4: Electrician Workplace Environment + Inside-Scene Samaira + 9 Parent Topic Options
+  // SCREEN 4: Electrician Workplace Environment + Inside-Scene Centered Samaira + 9 Options
   renderEnvironmentScreen(container) {
     const isGu = this.language.includes("gu");
     const course = this.courses.find(c => c.course_id === this.selectedCourseId) || this.courses[0];
@@ -537,14 +535,14 @@ class SamairaApp {
 
     container.innerHTML = `
       <div>
-        <!-- Environment Stage Container with Illustrated Electrical Workplace -->
+        <!-- Environment Stage Container -->
         <div class="environment-stage">
           <div id="env-bg-container" class="environment-bg-container" style="background-image: url('${bgMap[this.envTab]}');">
             <div class="environment-overlay">
               <!-- Top bar with tabs -->
               <div class="env-top-bar">
                 <div class="env-title-group">
-                  <span class="demo-tag" style="margin-bottom: 6px;">⚡ ${isGu ? "ઇન્ટરેક્ટિવ કાર્યસ્થળ સિમ્યુલેશન" : "Interactive Workplace Scene"}</span>
+                  <span class="demo-tag" style="background: rgba(255, 255, 255, 0.9); color: #0f172a; margin-bottom: 6px;">⚡ ${isGu ? "ઇન્ટરેક્ટિવ કાર્યસ્થળ" : "Interactive Workplace"}</span>
                   <h2>${tradeTitle} — ${isGu ? "કાર્યસ્થળ સિમ્યુલેશન" : "Vocational Workplace"}</h2>
                 </div>
 
@@ -564,17 +562,17 @@ class SamairaApp {
                 </div>
               </div>
 
-              <!-- Inside-Scene Samaira Character & Spoken Voice Box -->
+              <!-- Inside-Scene Samaira in the Middle of the workplace -->
               <div class="scene-samaira-wrapper">
                 <div class="scene-samaira-avatar-card">
-                  <img id="scene-samaira-img" src="assets/samaira/samaira_standing_welcoming.png" alt="Samaira Character" />
+                  <img id="scene-samaira-img" src="assets/samaira/samaira_char_welcoming.png" alt="Samaira Character" />
                 </div>
                 
                 <div class="scene-speech-box">
                   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                    <div class="samaira-name-badge">
+                    <div class="dialogue-brand">
                       <span class="status-indicator-dot speaking-dot"></span>
-                      <span>Samaira AI</span>
+                      <span class="dialogue-name">Samaira AI</span>
                       <div class="audio-wave">
                         <div class="wave-bar"></div>
                         <div class="wave-bar"></div>
@@ -584,14 +582,14 @@ class SamairaApp {
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 8px;">
-                      <span id="scene-samaira-tag" class="speech-emotion-tag">${this.t("state_explaining")}</span>
-                      <button id="btn-scene-replay" class="speech-mini-action" title="Replay Voice">
+                      <span id="scene-samaira-tag" class="dialogue-emotion-tag">${this.t("state_explaining")}</span>
+                      <button id="btn-scene-replay" class="dialogue-mini-btn" title="Replay Voice">
                         🔊
                       </button>
                     </div>
                   </div>
 
-                  <div id="scene-speech-text" style="font-size: 1.05rem; line-height: 1.6; color: #fff;">
+                  <div id="scene-speech-text" style="font-size: 1.05rem; line-height: 1.6; color: #1e293b;">
                     ${this.t("env_workplace_explanation")}
                   </div>
                 </div>
@@ -606,11 +604,11 @@ class SamairaApp {
           ${this.envTab === 'income' ? renderDataVisualization(course, this.language) : ''}
         </div>
 
-        <!-- THE 9 PARENT TOPIC OPTIONS FROM PROMPT -->
+        <!-- THE 9 PARENT TOPIC OPTIONS -->
         <section class="concerns-section">
           <div class="concerns-heading">
             <div>
-              <h3 style="font-size: 1.8rem; font-weight: 700; margin-bottom: 4px; color: #fff;">
+              <h3 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 4px; color: #0f172a;">
                 ${this.t("env_ask_first_title")}
               </h3>
               <p style="color: var(--text-muted); font-size: 0.95rem;">
@@ -669,7 +667,7 @@ class SamairaApp {
               class="question-input" 
               placeholder="${this.t("counsel_ask_placeholder")}" 
             />
-            <button id="btn-mic-toggle" class="mic-btn" title="Voice Input (Speech-to-Text)">
+            <button id="btn-mic-toggle" class="mic-btn" title="Voice Input">
               🎤
             </button>
             <button id="btn-counsel-submit" class="btn-primary" style="padding: 10px 22px; font-size: 0.95rem;">
@@ -703,7 +701,7 @@ class SamairaApp {
               <div style="font-size: 0.82rem; font-weight: 700; color: var(--secondary); text-transform: uppercase; margin-bottom: 4px;">
                 ${this.t("escalate_title")}
               </div>
-              <h4 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 6px;">
+              <h4 style="font-size: 1.4rem; font-weight: 800; margin-bottom: 6px; color: #0f172a;">
                 ${isGu ? "કોઈપણ અંગત મૂંઝવણ માટે નિષ્ણાત માનવ કાઉન્સેલર ઉપલબ્ધ છે" : "Still have personal questions about admissions or finances?"}
               </h4>
               <p style="color: var(--text-muted); font-size: 0.92rem;">
@@ -719,21 +717,16 @@ class SamairaApp {
       </div>
     `;
 
-    // Samaira's spoken transition when entering Electrician Workplace:
-    // "Great. Let's explore the Electrician career. Instead of simply showing you information on a screen, I'll take you through what this career actually looks like."
-    // Followed by: "Electricians can work in areas such as construction, manufacturing, maintenance, facilities, infrastructure and related technical industries. What would you and your family like to know first?"
     if (!this.samaira) {
       this.samaira = new SamairaCharacter("samaira-container-hidden", {});
     }
     const transitionSpeech = `${this.t("env_transition_spoken")} ${this.t("env_ask_first_spoken")}`;
     this.samaira.speak(transitionSpeech, "explaining", this.language);
 
-    // Bind Replay Voice button
     document.getElementById("btn-scene-replay")?.addEventListener("click", () => {
       if (this.samaira) this.samaira.replay();
     });
 
-    // Switch Environment Tabs
     const switchEnvTab = (tab) => {
       this.envTab = tab;
       const bgEl = document.getElementById("env-bg-container");
@@ -755,7 +748,6 @@ class SamairaApp {
     document.getElementById("tab-income")?.addEventListener("click", () => switchEnvTab("income"));
     document.getElementById("tab-safety")?.addEventListener("click", () => switchEnvTab("safety"));
 
-    // Bind the 9 Parent Option Buttons
     const handleTopicClick = (topic) => {
       document.querySelectorAll(".option-btn-9").forEach(b => b.classList.remove("active"));
       document.getElementById(`opt-${topic}`)?.classList.add("active");
@@ -798,7 +790,6 @@ class SamairaApp {
       });
     });
 
-    // Sample question chips
     document.querySelectorAll(".btn-sample-q").forEach(chip => {
       chip.addEventListener("click", (e) => {
         const q = e.currentTarget.getAttribute("data-q");
@@ -808,7 +799,6 @@ class SamairaApp {
       });
     });
 
-    // Submit question button & enter key
     const qInput = document.getElementById("counsel-question-input");
     document.getElementById("btn-counsel-submit")?.addEventListener("click", () => {
       if (qInput && qInput.value.trim()) {
@@ -822,7 +812,6 @@ class SamairaApp {
       }
     });
 
-    // Mic button
     document.getElementById("btn-mic-toggle")?.addEventListener("click", () => {
       if (!this.recognition) {
         const sampleQuery = isGu ? "આ કોર્સ કર્યા પછી કેટલી કમાણી થઈ શકે?" : "What is the future of an electrician?";
@@ -842,7 +831,6 @@ class SamairaApp {
       }
     });
 
-    // Counsellor escalation trigger
     document.getElementById("btn-escalate-action")?.addEventListener("click", () => this.openCounsellorModal());
   }
 
@@ -852,9 +840,8 @@ class SamairaApp {
     const sceneTag = document.getElementById("scene-samaira-tag");
     const isGu = this.language.includes("gu");
 
-    // Immediate Attentive / Thinking state
     if (sceneTag) sceneTag.textContent = this.t("state_thinking");
-    if (sceneImg) sceneImg.src = "assets/samaira/samaira_face_thoughtful.png";
+    if (sceneImg) sceneImg.src = "assets/samaira/samaira_char_listening.png";
     if (sceneText) sceneText.textContent = isGu 
       ? "સમાયરા તમારા પ્રશ્નનું વિશ્લેષણ કરી રહી છે..." 
       : "Samaira is analyzing your question against vocational knowledge...";
@@ -875,7 +862,6 @@ class SamairaApp {
       this.displayCounselAnswer(data);
     } catch (err) {
       console.warn("API counsel call notice, executing verified fallback:", err);
-      // Fallback
       const fallback = {
         spoken_text: isGu 
           ? "પ્રોટોટાઇપ ડેમો ડેટાસેટ મુજબ, શરૂઆતની કમાણી ચૌદથી અઢાર હજાર રૂપિયા પ્રતિ માસ છે અને અનુભવ સાથે પચીસથી પાંત્રીસ હજાર રૂપિયા સુધી પહોંચે છે."
@@ -905,18 +891,19 @@ class SamairaApp {
     const course = this.courses.find(c => c.course_id === this.selectedCourseId) || this.courses[0];
     const isGu = this.language.includes("gu");
 
+    // Dynamic transparent character sprites
     const emotionMap = {
-      reassuring: "assets/samaira/samaira_face_reassuring.png",
-      explaining: "assets/samaira/samaira_pose_explaining.png",
-      pointing: "assets/samaira/samaira_pose_pointing.png",
-      listening: "assets/samaira/samaira_face_listening.png",
-      thinking: "assets/samaira/samaira_face_thoughtful.png",
-      concerned: "assets/samaira/samaira_face_concerned.png",
-      happy: "assets/samaira/samaira_face_happy.png",
-      welcoming: "assets/samaira/samaira_standing_welcoming.png"
+      reassuring: "assets/samaira/samaira_char_welcoming.png",
+      explaining: "assets/samaira/samaira_char_explaining.png",
+      pointing: "assets/samaira/samaira_char_explaining.png",
+      listening: "assets/samaira/samaira_char_listening.png",
+      thinking: "assets/samaira/samaira_char_listening.png",
+      concerned: "assets/samaira/samaira_char_listening.png",
+      happy: "assets/samaira/samaira_char_welcoming.png",
+      welcoming: "assets/samaira/samaira_char_welcoming.png"
     };
 
-    if (sceneImg) sceneImg.src = emotionMap[data.emotion] || "assets/samaira/samaira_pose_explaining.png";
+    if (sceneImg) sceneImg.src = emotionMap[data.emotion] || "assets/samaira/samaira_char_explaining.png";
     if (sceneTag) {
       const tagKey = `state_${data.emotion}` in (translations[this.language] || {}) 
         ? this.t(`state_${data.emotion}`) 
@@ -927,7 +914,6 @@ class SamairaApp {
       sceneText.innerHTML = data.display_text || data.answer;
     }
 
-    // Dynamic Visual Cards (Income, Career Growth Pathway, etc.)
     if (vizSlot) {
       if (data.visual_card_type === "career_growth" || data.concern_category === "career_growth") {
         vizSlot.innerHTML = renderCareerPathway(course, this.language);
@@ -936,7 +922,6 @@ class SamairaApp {
       }
     }
 
-    // Conversational Follow-Up Prompt
     if (followUpSlot) {
       const followUpText = data.follow_up_question || this.t("follow_up_default");
       followUpSlot.innerHTML = `
@@ -970,17 +955,14 @@ class SamairaApp {
       });
     }
 
-    // Scroll slightly so the response is visible
     const stage = document.querySelector(".environment-stage");
     if (stage) stage.scrollIntoView({ behavior: "smooth", block: "start" });
 
-    // Speak aloud using TTS with the short natural spoken text
     const textToSpeak = data.spoken_text || data.answer;
     if (this.samaira) {
       this.samaira.speak(textToSpeak, data.emotion, this.language);
     }
 
-    // If unverified or requires human counsellor, offer escalation
     if (data.requires_human_counsellor) {
       setTimeout(() => {
         this.openCounsellorModal();
@@ -988,12 +970,12 @@ class SamairaApp {
     }
   }
 
-  // SCREEN 5: Admin Dashboard
+  // SCREEN 5: Admin Dashboard on White
   async renderAdminScreen(container) {
     container.innerHTML = `
       <div style="text-align: center; padding: 60px 0;">
-        <div style="font-size: 2.5rem; margin-bottom: 12px; animation: floatSubtle 2s infinite;">📊</div>
-        <h3>Loading Real-time Counselling Analytics...</h3>
+        <div style="font-size: 2.5rem; margin-bottom: 12px;">📊</div>
+        <h3 style="color: #0f172a;">Loading Real-time Counselling Analytics...</h3>
       </div>
     `;
 

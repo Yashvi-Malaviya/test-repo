@@ -13,24 +13,21 @@ export class SamairaCharacter {
     this.lastLanguage = "en-IN";
     this.voices = [];
 
+    // Transparent animated standalone character cutouts
     this.assetMap = {
-      idle: "assets/samaira/samaira_standing_welcoming.png",
-      welcoming: "assets/samaira/samaira_standing_welcoming.png",
-      greeting: "assets/samaira/samaira_standing_welcoming.png",
-      listening: "assets/samaira/samaira_face_listening.png",
-      attentive: "assets/samaira/samaira_face_listening.png",
-      thinking: "assets/samaira/samaira_face_thoughtful.png",
-      speaking: "assets/samaira/samaira_pose_explaining.png",
-      explaining: "assets/samaira/samaira_pose_explaining.png",
-      pointing: "assets/samaira/samaira_pose_pointing.png",
-      reassuring: "assets/samaira/samaira_face_reassuring.png",
-      concerned: "assets/samaira/samaira_face_concerned.png",
-      happy: "assets/samaira/samaira_face_happy.png",
-      excited: "assets/samaira/samaira_face_excited.png",
-      showing_careers: "assets/samaira/samaira_scene_showing_careers.png",
-      explaining_data: "assets/samaira/samaira_scene_explaining_data.png",
-      building_confidence: "assets/samaira/samaira_scene_building_confidence.png",
-      talking_parents: "assets/samaira/samaira_scene_talking_parents.png"
+      idle: "assets/samaira/samaira_char_welcoming.png",
+      welcoming: "assets/samaira/samaira_char_welcoming.png",
+      greeting: "assets/samaira/samaira_char_welcoming.png",
+      listening: "assets/samaira/samaira_char_listening.png",
+      attentive: "assets/samaira/samaira_char_listening.png",
+      thinking: "assets/samaira/samaira_char_listening.png",
+      speaking: "assets/samaira/samaira_char_explaining.png",
+      explaining: "assets/samaira/samaira_char_explaining.png",
+      pointing: "assets/samaira/samaira_char_explaining.png",
+      reassuring: "assets/samaira/samaira_char_welcoming.png",
+      concerned: "assets/samaira/samaira_char_listening.png",
+      happy: "assets/samaira/samaira_char_welcoming.png",
+      excited: "assets/samaira/samaira_char_explaining.png"
     };
 
     this.emotionLabels = {
@@ -44,7 +41,7 @@ export class SamairaCharacter {
         explaining: "Explaining",
         pointing: "Pointing to Pathway",
         reassuring: "Warm & Reassuring",
-        concerned: "Empathetic & Concerned",
+        concerned: "Empathetic & Caring",
         happy: "Encouraging",
         excited: "Enthusiastic"
       },
@@ -87,28 +84,24 @@ export class SamairaCharacter {
     const isGu = language.includes("gu");
 
     if (isGu) {
-      // 1. Look for native Gujarati voice
       const guVoice = this.voices.find(v => 
         (v.lang && (v.lang.toLowerCase().includes("gu") || v.lang.toLowerCase() === "gu-in")) ||
         (v.name && v.name.toLowerCase().includes("gujarati"))
       );
       if (guVoice) return guVoice;
 
-      // 2. Look for Indian Hindi voice (reads Indic phonetics cleanly on Windows/Chrome)
       const hiVoice = this.voices.find(v => 
         (v.lang && v.lang.toLowerCase().includes("hi")) ||
         (v.name && (v.name.toLowerCase().includes("hindi") || v.name.toLowerCase().includes("kalpana") || v.name.toLowerCase().includes("swara")))
       );
       if (hiVoice) return hiVoice;
 
-      // 3. Fallback to any Indian English voice
       const inVoice = this.voices.find(v => 
         (v.lang && v.lang.toLowerCase().includes("en-in")) ||
         (v.name && (v.name.toLowerCase().includes("india") || v.name.toLowerCase().includes("heera") || v.name.toLowerCase().includes("neerja")))
       );
       if (inVoice) return inVoice;
     } else {
-      // English: Look for Indian English female voice for authentic warm persona
       const indianVoice = this.voices.find(v => 
         (v.lang && v.lang.toLowerCase() === "en-in") ||
         (v.name && (
@@ -121,7 +114,6 @@ export class SamairaCharacter {
       );
       if (indianVoice) return indianVoice;
 
-      // Fallback to high quality English voice
       const enVoice = this.voices.find(v => v.lang && v.lang.startsWith("en"));
       if (enVoice) return enVoice;
     }
@@ -156,7 +148,6 @@ export class SamairaCharacter {
     try {
       this.speechSynthesis.cancel();
 
-      // Clean text for speech synthesis (strip markdown, bullets, tags)
       const cleanText = text
         .replace(/[*#_`~]/g, "")
         .replace(/•/g, "")
@@ -173,7 +164,6 @@ export class SamairaCharacter {
         utterance.voice = selectedVoice;
       }
 
-      // Warm, professional, calm cadence suitable for parents
       utterance.rate = isGu ? 0.90 : 0.92;
       utterance.pitch = isGu ? 1.02 : 1.05;
 
@@ -244,29 +234,34 @@ export class SamairaCharacter {
     if (!this.container) return;
 
     this.container.innerHTML = `
-      <div class="samaira-stage">
-        <div class="samaira-glow-aura"></div>
-        
-        <div class="samaira-character-box">
+      <div class="samaira-animated-stage ${this.isSpeaking ? 'is-speaking' : 'is-idle'}">
+        <!-- Glowing Pulse Aura behind character -->
+        <div class="samaira-aura"></div>
+        <div class="samaira-sound-rings ${this.isSpeaking ? 'active' : ''}">
+          <span class="sound-ring ring-1"></span>
+          <span class="sound-ring ring-2"></span>
+          <span class="sound-ring ring-3"></span>
+        </div>
+
+        <!-- Animated Character Rig with Breathing & Living Shadow -->
+        <div class="samaira-character-rig ${this.isSpeaking ? 'speaking-animation' : 'breathing-animation'}">
           <img 
             id="samaira-img-element"
             src="${this.getImageForState()}" 
-            alt="Samaira AI Vocational Counsellor" 
-            class="samaira-character-img ${this.isSpeaking ? 'speaking' : ''}"
+            alt="Samaira AI Virtual Career Counsellor" 
+            class="samaira-live-character"
           />
-          <div class="samaira-badge-floating">
-            <span class="status-indicator-dot ${this.isSpeaking ? 'speaking-dot' : ''}"></span>
-            <span id="samaira-character-badge-text">Samaira</span>
-          </div>
+          <div class="samaira-ground-shadow"></div>
         </div>
 
-        <div id="samaira-bubble-wrapper" class="samaira-speech-bubble" style="${this.speechText ? 'display: block;' : 'display: none;'}">
-          <div class="speech-bubble-tail"></div>
+        <!-- Interactive Floating Dialogue Bubble -->
+        <div id="samaira-bubble-wrapper" class="samaira-floating-dialogue" style="${this.speechText ? 'display: block;' : 'display: none;'}">
+          <div class="dialogue-tail"></div>
           
-          <div class="speech-status-bar">
-            <div class="samaira-name-badge">
+          <div class="dialogue-header">
+            <div class="dialogue-brand">
               <span class="status-indicator-dot ${this.isSpeaking ? 'speaking-dot' : ''}"></span>
-              <span>Samaira AI</span>
+              <span class="dialogue-name">Samaira AI</span>
               ${this.isSpeaking ? `
                 <div class="audio-wave">
                   <div class="wave-bar"></div>
@@ -277,17 +272,17 @@ export class SamairaCharacter {
               ` : ''}
             </div>
 
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <span id="samaira-emotion-tag" class="speech-emotion-tag">
+            <div class="dialogue-actions">
+              <span id="samaira-emotion-tag" class="dialogue-emotion-tag">
                 ${this.getEmotionLabel()}
               </span>
-              <button id="btn-samaira-replay" class="speech-mini-action" title="Replay Spoken Voice">
+              <button id="btn-samaira-replay" class="dialogue-mini-btn" title="Replay Voice">
                 🔊
               </button>
             </div>
           </div>
 
-          <div id="samaira-speech-content" class="speech-text">
+          <div id="samaira-speech-content" class="dialogue-content">
             ${this.speechText}
           </div>
         </div>
@@ -299,17 +294,40 @@ export class SamairaCharacter {
 
   updateVisuals() {
     const imgEl = document.getElementById("samaira-img-element");
+    const rigEl = document.querySelector(".samaira-character-rig");
+    const stageEl = document.querySelector(".samaira-animated-stage");
+    const ringsEl = document.querySelector(".samaira-sound-rings");
     const bubbleWrapper = document.getElementById("samaira-bubble-wrapper");
     const speechContent = document.getElementById("samaira-speech-content");
     const emotionTag = document.getElementById("samaira-emotion-tag");
-    const dot = document.querySelector(".status-indicator-dot");
+    const dot = document.querySelector(".dialogue-brand .status-indicator-dot");
 
     if (imgEl) {
       imgEl.src = this.getImageForState();
+    }
+
+    if (stageEl) {
       if (this.isSpeaking) {
-        imgEl.classList.add("speaking");
+        stageEl.classList.add("is-speaking");
+        stageEl.classList.remove("is-idle");
       } else {
-        imgEl.classList.remove("speaking");
+        stageEl.classList.add("is-idle");
+        stageEl.classList.remove("is-speaking");
+      }
+    }
+
+    if (ringsEl) {
+      if (this.isSpeaking) ringsEl.classList.add("active");
+      else ringsEl.classList.remove("active");
+    }
+
+    if (rigEl) {
+      if (this.isSpeaking) {
+        rigEl.classList.add("speaking-animation");
+        rigEl.classList.remove("breathing-animation");
+      } else {
+        rigEl.classList.add("breathing-animation");
+        rigEl.classList.remove("speaking-animation");
       }
     }
 
