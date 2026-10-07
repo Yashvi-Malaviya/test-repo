@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+
+# Production build output (Vercel builds this remotely)
+frontend/dist/
+dist/
+
+# Vercel local cache
+.vercel/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Environment variables
+.env
+.env.local
+.env.*.local

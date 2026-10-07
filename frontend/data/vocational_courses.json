@@ -1,0 +1,1206 @@
+{
+  "metadata": {
+    "version": "1.0.0-mvp",
+    "data_status": "SYNTHETIC DEMO",
+    "label": "Prototype / Demo Dataset",
+    "note": "Placement rates, salary ranges, and outcomes in this prototype are synthetic demo values for UI, AI flow, and hackathon development. They do not represent official government statistics.",
+    "languages_supported": [
+      "en-IN",
+      "gu-IN"
+    ]
+  },
+  "parent_concerns": [
+    {
+      "id": "CON001",
+      "key": "income",
+      "name": "Income / Salary",
+      "name_gu": "આવક / પગાર",
+      "icon": "💰",
+      "example_question": "How much can my child earn after this course?",
+      "example_question_gu": "આ કોર્સ કર્યા પછી મારા બાળકને કેટલી કમાણી થશે?",
+      "required_data": "Starting + Experienced Earnings"
+    },
+    {
+      "id": "CON002",
+      "key": "placement",
+      "name": "Job Opportunities / Placement",
+      "name_gu": "નોકરીની તકો / પ્લેસમેન્ટ",
+      "icon": "🏢",
+      "example_question": "Will my child get a job after the course?",
+      "example_question_gu": "શું કોર્સ પછી નોકરી મળશે?",
+      "required_data": "Placement rate + Provider outcome"
+    },
+    {
+      "id": "CON003",
+      "key": "career_growth",
+      "name": "Career Growth / Future",
+      "name_gu": "કારકિર્દી વૃદ્ધિ / ભવિષ્ય",
+      "icon": "📈",
+      "example_question": "Can they become something bigger later?",
+      "example_question_gu": "શું ભવિષ્યમાં આગળ પ્રમોશન કે મોટી પોસ્ટ મળશે?",
+      "required_data": "Career Pathway"
+    },
+    {
+      "id": "CON004",
+      "key": "job_security",
+      "name": "Job Security & Demand",
+      "name_gu": "નોકરીની સ્થિરતા અને માંગ",
+      "icon": "🛡️",
+      "example_question": "Is there long-term demand for this work?",
+      "example_question_gu": "શું આ કામની બજારમાં લાંબા ગાળાની માંગ છે?",
+      "required_data": "Demand and Employment Evidence"
+    },
+    {
+      "id": "CON005",
+      "key": "further_education",
+      "name": "Further Education & Degree",
+      "name_gu": "આગળનો અભ્યાસ અને ડિગ્રી",
+      "icon": "🎓",
+      "example_question": "Can they pursue a diploma or degree after this?",
+      "example_question_gu": "શું આ પછી ડિપ્લોમા કે ડિગ્રી કરી શકાય?",
+      "required_data": "NSQF Progression + Education Routes"
+    },
+    {
+      "id": "CON006",
+      "key": "social_perception",
+      "name": "Respect & Social Status",
+      "name_gu": "સમાજમાં માન-સન્માન",
+      "icon": "🌟",
+      "example_question": "Is this a respectable profession for my child?",
+      "example_question_gu": "શું આ સમાજમાં માનભેર ગણાતી કારકિર્દી છે?",
+      "required_data": "Job Roles + Professional Progression"
+    },
+    {
+      "id": "CON007",
+      "key": "safety",
+      "name": "Workplace Safety",
+      "name_gu": "કાર્યસ્થળની સલામતી",
+      "icon": "🦺",
+      "example_question": "Is this work safe for my son or daughter?",
+      "example_question_gu": "શું આ કામ મારા બાળકની સુરક્ષાની દ્રષ્ટિએ સલામત છે?",
+      "required_data": "Safety Procedures + PPE Standards"
+    },
+    {
+      "id": "CON008",
+      "key": "location",
+      "name": "Local Opportunities",
+      "name_gu": "સ્થાનિક તકો / ઘર નજીક નોકરી",
+      "icon": "📍",
+      "example_question": "Will my child have to move far away from home?",
+      "example_question_gu": "શું ઘરથી દૂર જવું પડશે કે નજીકમાં નોકરી મળશે?",
+      "required_data": "Local Industry + Regional Availability"
+    },
+    {
+      "id": "CON009",
+      "key": "duration",
+      "name": "Course Duration",
+      "name_gu": "કોર્સનો સમયગાળો",
+      "icon": "⏱️",
+      "example_question": "How long does this course take?",
+      "example_question_gu": "આ કોર્સ પૂર્ણ થતાં કેટલો સમય લાગશે?",
+      "required_data": "Typical Duration"
+    },
+    {
+      "id": "CON010",
+      "key": "eligibility",
+      "name": "Eligibility & Entry",
+      "name_gu": "લાયકાત અને પ્રવેશ",
+      "icon": "📋",
+      "example_question": "Can a 10th or 12th pass student join?",
+      "example_question_gu": "૧૦મું કે ૧૨મું પાસ કર્યા પછી પ્રવેશ મળી શકે?",
+      "required_data": "Entry Education"
+    },
+    {
+      "id": "CON011",
+      "key": "cost",
+      "name": "Fees & Scholarships",
+      "name_gu": "ફી અને સ્કોલરશિપ",
+      "icon": "🏷️",
+      "example_question": "What are the training fees and government subsidies?",
+      "example_question_gu": "તાલીમ ફી કેટલી હોય છે અને સરકારી સહાય મળે છે?",
+      "required_data": "Fee Structure and Subsidy Guidelines"
+    },
+    {
+      "id": "CON012",
+      "key": "skills",
+      "name": "Practical Skills Learned",
+      "name_gu": "શીખવા મળતા પ્રેક્ટિકલ કૌશલ્યો",
+      "icon": "🔧",
+      "example_question": "What practical tools and skills will they master?",
+      "example_question_gu": "હાથેથી કયા સાધનો અને કામ શીખવા મળશે?",
+      "required_data": "Skill List + Practical Training"
+    }
+  ],
+  "courses": [
+    {
+      "course_id": "VOC001",
+      "sector": "Electrical",
+      "sector_gu": "ઇલેક્ટ્રિકલ",
+      "trade_name": "Electrician",
+      "trade_name_gu": "ઇલેક્ટ્રિશિયન",
+      "tagline": "Powering homes, smart buildings, renewable grids, and modern industries",
+      "tagline_gu": "ઘર, સ્માર્ટ ઇમારતો, રિન્યુએબલ ગ્રીડ અને આધુનિક ઉદ્યોગોને ઉર્જા પ્રદાન કરતી કારકિર્દી",
+      "aliases": [
+        "Electrical Technician",
+        "Wireman",
+        "Maintenance Electrician"
+      ],
+      "aliases_gu": [
+        "ઇલેક્ટ્રિકલ ટેકનિશિયન",
+        "વાયરમેન",
+        "મેઇન્ટેનન્સ ઇલેક્ટ્રિશિયન"
+      ],
+      "entry_education": "10th pass",
+      "entry_education_gu": "૧૦મું પાસ",
+      "typical_duration": "1–2 years depending on qualification/program",
+      "typical_duration_gu": "૧ થી ૨ વર્ષ (પ્રોગ્રામ અનુસાર)",
+      "example_nsqf_level": "4",
+      "work_environment": "Residential buildings, commercial complexes, manufacturing factories, workshops, infrastructure & smart grid sites",
+      "work_environment_gu": "રહેણાંક ઇમારતો, કોમર્શિયલ કોમ્પ્લેક્સ, કારખાના, વર્કશોપ અને ઇન્ફ્રાસ્ટ્રક્ચર પ્રોજેક્ટ્સ",
+      "practical_work": [
+        "Electrical wiring and conduit fitting",
+        "Circuit breaker and distribution board installation",
+        "Equipment fault finding and multi-meter testing",
+        "Preventive maintenance and appliance troubleshooting",
+        "Earthing and surge protection setups"
+      ],
+      "practical_work_gu": [
+        "ઇલેક્ટ્રિકલ વાયરિંગ અને ફિટિંગ",
+        "સર્કિટ બ્રેકર અને ડીબી બોક્સ ઇન્સ્ટોલેશન",
+        "ફોલ્ટ શોધ અને મલ્ટીમીટર ટેસ્ટિંગ",
+        "નિવારક જાળવણી અને ઉપકરણ રિપેરિંગ",
+        "અર્થિંગ અને સર્જ પ્રોટેક્શન સિસ્ટમ"
+      ],
+      "major_skills": [
+        "Electrical schematic reading",
+        "Circuit testing & troubleshooting",
+        "Safety compliance & PPE usage",
+        "Hand & power tools handling",
+        "Automation & solar integration basics"
+      ],
+      "major_skills_gu": [
+        "ઇલેક્ટ્રિકલ ડ્રોઇંગ અને નકશા સમજવા",
+        "સર્કિટ ટેસ્ટિંગ અને ફોલ્ટ સોલ્યુશન",
+        "સલામતી નિયમો અને પીપીઈનો ઉપયોગ",
+        "ટૂલ્સ અને સાધનોનું સંચાલન",
+        "સોલર અને ઓટોમેશન કનેક્શન"
+      ],
+      "common_job_roles": [
+        "Electrician",
+        "Maintenance Electrician",
+        "Electrical Technician",
+        "Building Services Wireman",
+        "Control Panel Assembler"
+      ],
+      "common_job_roles_gu": [
+        "ઇલેક્ટ્રિશિયન",
+        "મેઇન્ટેનન્સ ઇલેક્ટ્રિશિયન",
+        "ઇલેક્ટ્રિકલ ટેકનિશિયન",
+        "વાયરમેન",
+        "કંટ્રોલ પેનલ એસેમ્બલર"
+      ],
+      "industries": [
+        "Construction & Infrastructure",
+        "Manufacturing & Heavy Engineering",
+        "Facilities Management & Hotels",
+        "Renewable Energy & Solar Parks",
+        "Public Utilities & Metro Rail"
+      ],
+      "industries_gu": [
+        "બાંધકામ અને ઇન્ફ્રાસ્ટ્રક્ચર",
+        "મેન્યુફેક્ચરિંગ અને ઉદ્યોગો",
+        "ફેસિલિટી મેનેજમેન્ટ અને હોસ્પિટલો",
+        "સોલર અને રિન્યુએબલ એનર્જી",
+        "પાવર ગ્રીડ અને મેટ્રો રેલ"
+      ],
+      "career_growth": [
+        {
+          "stage": 1,
+          "role": "Electrician / Apprentice",
+          "role_gu": "ઇલેક્ટ્રિશિયન / એપ્રેન્ટિસ",
+          "experience": "0–2 years",
+          "focus": "Foundational wiring, maintenance, and tool mastery"
+        },
+        {
+          "stage": 2,
+          "role": "Skilled Electrician",
+          "role_gu": "સ્કિલ્ડ ઇલેક્ટ્રિશિયન",
+          "experience": "2–4 years",
+          "focus": "Commercial installations, fault diagnosis, independent contracts"
+        },
+        {
+          "stage": 3,
+          "role": "Senior Technician / Wireman Lead",
+          "role_gu": "સીનિયર ટેકનિશિયન / લીડ વાયરમેન",
+          "experience": "4–7 years",
+          "focus": "Industrial equipment, three-phase distribution, team coordination"
+        },
+        {
+          "stage": 4,
+          "role": "Electrical Supervisor / Site Foreman",
+          "role_gu": "ઇલેક્ટ્રિકલ સુપરવાઇઝર / સાઇટ ફોરમેન",
+          "experience": "7–10 years",
+          "focus": "Project supervision, safety adherence, billing, contractor licensing"
+        },
+        {
+          "stage": 5,
+          "role": "Specialised Roles / Electrical Contractor / Business Owner",
+          "role_gu": "સ્પેશિયાલાઇઝ્ડ એક્સપર્ટ / ઇલેક્ટ્રિકલ કોન્ટ્રાક્ટર",
+          "experience": "10+ years",
+          "focus": "Smart building automation, solar PV consulting, licensed enterprise"
+        }
+      ],
+      "further_learning": [
+        "Advanced Electrical Inspector Certifications",
+        "NSQF Level 5/6 Diploma in Electrical Engineering (lateral entry)",
+        "Industrial Automation & PLC/SCADA certification",
+        "Solar Rooftop Grid-tied Installation training",
+        "Government Electrical Contractor Licensing Exam (Class II / Class I)"
+      ],
+      "further_learning_gu": [
+        "અદ્યતન ઇલેક્ટ્રિકલ પ્રમાણપત્ર",
+        "ઇલેક્ટ્રિકલ એન્જિનિયરિંગમાં ડિપ્લોમા (લેટરલ એન્ટ્રી)",
+        "ઇન્ડસ્ટ્રીયલ ઓટોમેશન અને પીએલસી તાલીમ",
+        "સોલર ગ્રીડ ઇન્સ્ટોલેશન સ્પેશિયલાઇઝેશન",
+        "સરકારી ઇલેક્ટ્રિકલ લાયસન્સ પરીક્ષા"
+      ],
+      "parent_concerns": [
+        "Income",
+        "Safety",
+        "Job Security",
+        "Career Growth",
+        "Social Perception"
+      ],
+      "demo_starting_earnings_monthly": "₹14,000–₹18,000",
+      "demo_starting_min": 14000,
+      "demo_starting_max": 18000,
+      "demo_experienced_earnings_monthly": "₹25,000–₹35,000",
+      "demo_experienced_min": 25000,
+      "demo_experienced_max": 35000,
+      "contractor_potential_monthly": "₹50,000–₹1,00,000+",
+      "demo_placement_rate": "76%",
+      "demo_placement_value": 76,
+      "data_status": "SYNTHETIC DEMO",
+      "environment_theme": "electrician_workshop",
+      "samaira_explanation": {
+        "en": "Electricians enjoy sustained high demand across homes, commercial buildings, factories, infrastructure, and renewable energy sectors. It is not merely routine wiring; it is disciplined technical work leading to supervisor posts, high-margin independent contracting, or solar specialization.",
+        "gu": "ઇલેક્ટ્રિશિયનની માંગ ઘર, શોપિંગ મોલ, ફેક્ટરીઓ અને સોલર પ્રોજેક્ટ્સમાં સતત રહે છે. આ માત્ર વાયરિંગનું સામાન્ય કામ નથી, પરંતુ એક ટેકનિકલ કળા છે જે સુપરવાઇઝર કે પોતાના બિઝનેસ સુધી લઈ જાય છે."
+      },
+      "safety_explanation": {
+        "en": "Professional electrical training strictly enforces safety procedures, personal protective equipment (certified 1000V insulated tools, flame-resistant PPE, dielectric footwear), and Lockout/Tagout (LOTO) protocols. When safety rules are followed, electrical work is an orderly, secure profession.",
+        "gu": "ઇલેક્ટ્રિકલ તાલીમમાં સુરક્ષાના નિયમો (ઇન્સ્યુલેટેડ ગ્લોવ્ઝ, સેફ્ટી શૂઝ અને લોકઆઉટ પ્રોટોકોલ) પર ખાસ ભાર મુકાય છે. નિયમોનું પાલન કરવાથી આ કામ અત્યંત સલામત બને છે."
+      }
+    },
+    {
+      "course_id": "VOC002",
+      "sector": "Renewable Energy",
+      "sector_gu": "રિન્યુએબલ એનર્જી (સૂર્ય ઉર્જા)",
+      "trade_name": "Solar PV Installer / Technician",
+      "trade_name_gu": "સોલર પીવી ઇન્સ્ટોલર / ટેકનિશિયન",
+      "tagline": "Harnessing solar power for green homes, farms, and mega solar parks",
+      "tagline_gu": "ઘર, ખેતરો અને મોટા સોલર પાર્ક માટે સૂર્ય ઉર્જા સ્થાપિત કરવાની આધુનિક કારકિર્દી",
+      "aliases": [
+        "Solar Technician",
+        "Solar Installer",
+        "Solar PV Service Technician"
+      ],
+      "aliases_gu": [
+        "સોલર ટેકનિશિયન",
+        "સોલર ઇન્સ્ટોલર"
+      ],
+      "entry_education": "10th pass",
+      "entry_education_gu": "૧૦મું પાસ",
+      "typical_duration": "3–12 months depending on qualification",
+      "typical_duration_gu": "૩ થી ૧૨ મહિના",
+      "example_nsqf_level": "4",
+      "work_environment": "Rooftops, solar farms, commercial buildings, residential sites, renewable-energy companies",
+      "work_environment_gu": "ધાબા, સોલર ફાર્મ, કોમર્શિયલ બિલ્ડિંગ અને રિન્યુએબલ કંપનીઓ",
+      "practical_work": [
+        "Solar panel mounting and array structural assembly",
+        "Inverter and battery storage wiring",
+        "Grid synchronization & net metering tests",
+        "Panel efficiency auditing and thermal scanning"
+      ],
+      "practical_work_gu": [
+        "સોલર પેનલ ફિટિંગ",
+        "ઇન્વર્ટર અને બેટરી કનેક્શન",
+        "ગ્રીડ કનેક્ટિવિટી અને નેટ મીટરિંગ",
+        "મેઇન્ટેનન્સ અને પેનલ ઓડિટ"
+      ],
+      "major_skills": [
+        "Solar PV installation",
+        "DC/AC electrical basics",
+        "Height safety & roof anchoring",
+        "Inverter troubleshooting"
+      ],
+      "major_skills_gu": [
+        "સોલર ઇન્સ્ટોલેશન",
+        "ડીસી/એસી વાયરિંગ",
+        "ઊંચાઈ પર કામ કરવાની સુરક્ષા",
+        "ઇન્વર્ટર ટેસ્ટિંગ"
+      ],
+      "common_job_roles": [
+        "Solar Installer",
+        "Solar Technician",
+        "Solar Service Technician"
+      ],
+      "common_job_roles_gu": [
+        "સોલર ઇન્સ્ટોલર",
+        "સોલર સર્વિસ ટેકનિશિયન"
+      ],
+      "industries": [
+        "Renewable Energy",
+        "Electrical Services",
+        "Construction",
+        "Infrastructure"
+      ],
+      "industries_gu": [
+        "રિન્યુએબલ એનર્જી",
+        "ઇલેક્ટ્રિકલ સર્વિસ",
+        "કન્સ્ટ્રક્શન"
+      ],
+      "career_growth": [
+        {
+          "stage": 1,
+          "role": "Solar Installer",
+          "role_gu": "સોલર ઇન્સ્ટોલર",
+          "experience": "0–2 years",
+          "focus": "Rooftop mounting and cabling"
+        },
+        {
+          "stage": 2,
+          "role": "Solar Technician",
+          "role_gu": "સોલર ટેકનિશિયન",
+          "experience": "2–4 years",
+          "focus": "Inverter diagnostics, grid tie-in"
+        },
+        {
+          "stage": 3,
+          "role": "Senior Solar Technician",
+          "role_gu": "સીનિયર સોલર ટેકનિશિયન",
+          "experience": "4–6 years",
+          "focus": "Commercial solar installations"
+        },
+        {
+          "stage": 4,
+          "role": "Site Supervisor / Project Lead",
+          "role_gu": "સાઇટ સુપરવાઇઝર",
+          "experience": "6–9 years",
+          "focus": "Turnkey rooftop and plant installations"
+        },
+        {
+          "stage": 5,
+          "role": "Solar Project Consultant / EPC Contractor",
+          "role_gu": "સોલર કન્સલ્ટન્ટ / કોન્ટ્રાક્ટર",
+          "experience": "9+ years",
+          "focus": "EPC company ownership, subsidy consulting"
+        }
+      ],
+      "further_learning": [
+        "Advanced Solar EPC Training",
+        "BESS (Battery Energy Storage) Specialization",
+        "Diploma in Electrical Engineering"
+      ],
+      "further_learning_gu": [
+        "એડવાન્સ્ડ સોલર ઇપીસી તાલીમ",
+        "બેટરી સ્ટોરેજ સિસ્ટમ",
+        "ઇલેક્ટ્રિકલ ડિપ્લોમા"
+      ],
+      "parent_concerns": [
+        "Job Availability",
+        "Outdoor Work",
+        "Income",
+        "Long-term Growth"
+      ],
+      "demo_starting_earnings_monthly": "₹14,000–₹20,000",
+      "demo_starting_min": 14000,
+      "demo_starting_max": 20000,
+      "demo_experienced_earnings_monthly": "₹25,000–₹40,000",
+      "demo_experienced_min": 25000,
+      "demo_experienced_max": 40000,
+      "demo_placement_rate": "78%",
+      "demo_placement_value": 78,
+      "data_status": "SYNTHETIC DEMO"
+    },
+    {
+      "course_id": "VOC003",
+      "sector": "Manufacturing",
+      "sector_gu": "મેન્યુફેક્ચરિંગ (ઉત્પાદન)",
+      "trade_name": "CNC Operator",
+      "trade_name_gu": "સીએનસી ઓપરેટર",
+      "tagline": "Precision manufacturing using high-tech computer numerical control machines",
+      "tagline_gu": "કોમ્પ્યુટરાઇઝ્ડ મશીનો દ્વારા અત્યંત ચોકસાઈપૂર્વક પાર્ટ્સ બનાવવાનું આધુનિક ક્ષેત્ર",
+      "aliases": [
+        "CNC Machine Operator",
+        "CNC Turning Operator",
+        "CNC Machining Operator"
+      ],
+      "aliases_gu": [
+        "સીએનસી મશીન ઓપરેટર"
+      ],
+      "entry_education": "10th pass",
+      "entry_education_gu": "૧૦મું પાસ",
+      "typical_duration": "3–12 months depending on program",
+      "typical_duration_gu": "૩ થી ૧૨ મહિના",
+      "example_nsqf_level": "4",
+      "work_environment": "Manufacturing plants, machine shops, automotive factories, precision engineering industries",
+      "work_environment_gu": "ફેક્ટરીઓ, મશીન શોપ્સ, ઓટોમોટિવ પ્લાન્ટ્સ અને એન્જિનિયરિંગ એકમો",
+      "practical_work": [
+        "Machine setup and workpiece zeroing",
+        "Tool offset calibration and tool changes",
+        "High-precision micrometer & Vernier caliper checks",
+        "Component quality inspection and tolerance monitoring"
+      ],
+      "practical_work_gu": [
+        "મશીન સેટિંગ અને ટૂલિંગ",
+        "વર્કપીસ માપણી (વર્નિયર/માઇક્રોમીટર)",
+        "ટૂલ ઓફસેટ એડજસ્ટમેન્ટ",
+        "ગુણવત્તા ચકાસણી"
+      ],
+      "major_skills": [
+        "CNC operation",
+        "Precision measurement",
+        "G-code basics",
+        "Machine safety",
+        "Quality control"
+      ],
+      "major_skills_gu": [
+        "સીએનસી ઓપરેશન",
+        "ચોકસાઈભરી માપણી",
+        "જી-કોડ બેઝિક્સ",
+        "ગુણવત્તા નિયંત્રણ"
+      ],
+      "common_job_roles": [
+        "CNC Operator",
+        "Machine Operator",
+        "Production Technician"
+      ],
+      "common_job_roles_gu": [
+        "સીએનસી ઓપરેટર",
+        "પ્રોડક્શન ટેકનિશિયન"
+      ],
+      "industries": [
+        "Automotive Components",
+        "Aerospace Engineering",
+        "Heavy Machinery",
+        "Defence Manufacturing"
+      ],
+      "industries_gu": [
+        "ઓટોમોટિવ પાર્ટ્સ",
+        "એરોસ્પેસ",
+        "મિકેનિકલ એન્જિનિયરિંગ"
+      ],
+      "career_growth": [
+        {
+          "stage": 1,
+          "role": "CNC Operator",
+          "role_gu": "સીએનસી ઓપરેટર",
+          "experience": "0–2 years",
+          "focus": "Loading parts, running cycles, inspection"
+        },
+        {
+          "stage": 2,
+          "role": "Skilled Operator / Tool Setter",
+          "role_gu": "સ્કિલ્ડ સેટર",
+          "experience": "2–4 years",
+          "focus": "Tool offset adjustment, setup troubleshooting"
+        },
+        {
+          "stage": 3,
+          "role": "CNC Programmer",
+          "role_gu": "સીએનસી પ્રોગ્રામર",
+          "experience": "4–7 years",
+          "focus": "G-code programming, CAM toolpaths"
+        },
+        {
+          "stage": 4,
+          "role": "Machine Shop Supervisor",
+          "role_gu": "શોપ ફ્લોર સુપરવાઇઝર",
+          "experience": "7–10 years",
+          "focus": "Shift management, production targets, quality audit"
+        },
+        {
+          "stage": 5,
+          "role": "Production Manager / Manufacturing Specialist",
+          "role_gu": "પ્રોડક્શન મેનેજર",
+          "experience": "10+ years",
+          "focus": "Plant operations, automated CNC cells"
+        }
+      ],
+      "further_learning": [
+        "CAD/CAM (Mastercam, Siemens NX)",
+        "Diploma in Mechanical Engineering",
+        "Robotics & Automation"
+      ],
+      "further_learning_gu": [
+        "કેડ/કેમ સોફ્ટવેર",
+        "મિકેનિકલ ડિપ્લોમા",
+        "રોબોટિક્સ"
+      ],
+      "parent_concerns": [
+        "Salary",
+        "Factory Environment",
+        "Career Growth",
+        "Job Stability"
+      ],
+      "demo_starting_earnings_monthly": "₹15,000–₹21,000",
+      "demo_starting_min": 15000,
+      "demo_starting_max": 21000,
+      "demo_experienced_earnings_monthly": "₹28,000–₹45,000",
+      "demo_experienced_min": 28000,
+      "demo_experienced_max": 45000,
+      "demo_placement_rate": "82%",
+      "demo_placement_value": 82,
+      "data_status": "SYNTHETIC DEMO"
+    },
+    {
+      "course_id": "VOC004",
+      "sector": "Automotive",
+      "sector_gu": "ઓટોમોટિવ (વાહન વ્યવહાર)",
+      "trade_name": "Automotive Service Technician",
+      "trade_name_gu": "ઓટોમોટિવ સર્વિસ ટેકનિશિયન",
+      "tagline": "Servicing modern petrol, diesel, and electric vehicles with digital diagnostics",
+      "tagline_gu": "આધુનિક કાર, બાઇક અને ઇલેક્ટ્રિક વાહનોનું સર્વિસિંગ અને કોમ્પ્યુટરાઇઝ્ડ ડાયગ્નોસ્ટિક્સ",
+      "aliases": [
+        "Automobile Technician",
+        "Vehicle Service Technician",
+        "Auto Service Technician"
+      ],
+      "aliases_gu": [
+        "વાહન મિકેનિક",
+        "ઓટો ટેકનિશિયન"
+      ],
+      "entry_education": "10th pass",
+      "entry_education_gu": "૧૦મું પાસ",
+      "typical_duration": "1–2 years depending on program",
+      "typical_duration_gu": "૧ થી ૨ વર્ષ",
+      "example_nsqf_level": "4",
+      "work_environment": "Service centres, authorised dealerships, workshops, fleet maintenance facilities",
+      "work_environment_gu": "ઓથોરાઇઝ્ડ સર્વિસ સેન્ટર, શોરૂમ, ગેરેજ અને ટ્રાન્સપોર્ટ વર્કશોપ",
+      "practical_work": [
+        "Engine & transmission servicing",
+        "Braking and suspension diagnostics",
+        "OBD-II scanner electronic testing",
+        "EV battery, motor, and controller check"
+      ],
+      "practical_work_gu": [
+        "એન્જિન અને ટ્રાન્સમિશન સર્વિસ",
+        "બ્રેક અને સસ્પેન્શન ચેકિંગ",
+        "ઓબીડી સ્કેનર ડાયગ્નોસિસ",
+        "ઈવી મોટર અને બેટરી ચેકિંગ"
+      ],
+      "major_skills": [
+        "Mechanical systems",
+        "Digital vehicle diagnostics",
+        "Automotive tools",
+        "EV safety protocols"
+      ],
+      "major_skills_gu": [
+        "મિકેનિકલ સિસ્ટમ્સ",
+        "ડિજિટલ સ્કેનિંગ",
+        "ઓટો ટૂલ્સ",
+        "ઈવી સેફ્ટી"
+      ],
+      "common_job_roles": [
+        "Automotive Technician",
+        "Service Technician",
+        "Diagnostic Technician"
+      ],
+      "common_job_roles_gu": [
+        "ઓટો ટેકનિશિયન",
+        "સર્વિસ એડવાઇઝર"
+      ],
+      "industries": [
+        "Automotive Dealerships",
+        "Transport & Fleet Operations",
+        "EV Startups",
+        "Independent Garages"
+      ],
+      "industries_gu": [
+        "ડીલરશીપ વર્કશોપ",
+        "ફ્લીટ ટ્રાન્સપોર્ટ",
+        "ઈવી સેક્ટર"
+      ],
+      "career_growth": [
+        {
+          "stage": 1,
+          "role": "Junior Service Technician",
+          "role_gu": "જુનિયર ટેકનિશિયન",
+          "experience": "0–2 years",
+          "focus": "Periodic maintenance, oil changes, brake pads"
+        },
+        {
+          "stage": 2,
+          "role": "Senior Technician",
+          "role_gu": "સીનિયર ટેકનિશિયન",
+          "experience": "2–4 years",
+          "focus": "Engine overhaul, electrical troubleshooting"
+        },
+        {
+          "stage": 3,
+          "role": "Diagnostic Specialist / Master Tech",
+          "role_gu": "ડાયગ્નોસ્ટિક સ્પેશિયાલિસ્ટ",
+          "experience": "4–7 years",
+          "focus": "ECU tuning, hybrid/EV high-voltage systems"
+        },
+        {
+          "stage": 4,
+          "role": "Service Advisor / Floor Supervisor",
+          "role_gu": "સર્વિસ એડવાઇઝર",
+          "experience": "7–10 years",
+          "focus": "Customer estimation, warranty approval, technicians team lead"
+        },
+        {
+          "stage": 5,
+          "role": "Workshop Manager / Franchise Owner",
+          "role_gu": "વર્કશોપ મેનેજર / ગેરેજ માલિક",
+          "experience": "10+ years",
+          "focus": "Full dealership service operations, private workshop"
+        }
+      ],
+      "further_learning": [
+        "Electric Vehicle (EV) Specialization",
+        "Advanced Bosch Diagnostic Certification",
+        "Diploma in Automobile Eng."
+      ],
+      "further_learning_gu": [
+        "ઇલેક્ટ્રિક વ્હીકલ તાલીમ",
+        "ડિજિટલ સ્કેનર સર્ટિફિકેશન",
+        "ઓટોમોબાઇલ ડિપ્લોમા"
+      ],
+      "parent_concerns": [
+        "Income",
+        "Workshop Safety",
+        "Future of EV",
+        "Career Stability"
+      ],
+      "demo_starting_earnings_monthly": "₹14,000–₹20,000",
+      "demo_starting_min": 14000,
+      "demo_starting_max": 20000,
+      "demo_experienced_earnings_monthly": "₹25,000–₹40,000",
+      "demo_experienced_min": 25000,
+      "demo_experienced_max": 40000,
+      "demo_placement_rate": "75%",
+      "demo_placement_value": 75,
+      "data_status": "SYNTHETIC DEMO"
+    },
+    {
+      "course_id": "VOC005",
+      "sector": "Healthcare",
+      "sector_gu": "હેલ્થકેર (આરોગ્ય સેવાઓ)",
+      "trade_name": "General Duty Assistant",
+      "trade_name_gu": "જનરલ ડ્યુટી આસિસ્ટન્ટ (જીડીએ)",
+      "tagline": "Compassionate patient care support in modern hospitals and clinics",
+      "tagline_gu": "હોસ્પિટલો અને ક્લિનિક્સમાં દર્દીઓની સારસંભાળ અને સહાયક સેવાઓ",
+      "aliases": [
+        "Healthcare Assistant",
+        "Patient Care Assistant",
+        "Nursing Assistant"
+      ],
+      "aliases_gu": [
+        "હેલ્થકેર આસિસ્ટન્ટ",
+        "પેશન્ટ કેર સહાયક"
+      ],
+      "entry_education": "10th / 12th pass",
+      "entry_education_gu": "૧૦મું / ૧૨મું પાસ",
+      "typical_duration": "3–12 months depending on qualification",
+      "typical_duration_gu": "૩ થી ૧૨ મહિના",
+      "example_nsqf_level": "4",
+      "work_environment": "Hospitals, specialty clinics, elderly-care facilities, diagnostic centres",
+      "work_environment_gu": "હોસ્પિટલો, નર્સિંગ હોમ, ડાયગ્નોસ્ટિક સેન્ટર્સ અને હોમ કેર",
+      "practical_work": [
+        "Patient mobility & vitals monitoring",
+        "Sanitization & infection control",
+        "Medication schedule assistance",
+        "Bed making & hygiene care"
+      ],
+      "practical_work_gu": [
+        "બ્લડ પ્રેશર અને પલ્સ ચેક કરવા",
+        "સ્વચ્છતા અને ઇન્ફેક્શન કંટ્રોલ",
+        "દવાઓમાં સહાય",
+        "દર્દીની સંભાળ"
+      ],
+      "major_skills": [
+        "Patient care",
+        "Vitals recording",
+        "Communication",
+        "Infection safety",
+        "Empathy"
+      ],
+      "major_skills_gu": [
+        "દર્દી સારસંભાળ",
+        "મેડિકલ માપણી",
+        "સંવાદ કૌશલ્ય",
+        "સહાનુભૂતિ"
+      ],
+      "common_job_roles": [
+        "General Duty Assistant",
+        "Patient Care Assistant",
+        "Ward Care Assistant"
+      ],
+      "common_job_roles_gu": [
+        "જનરલ ડ્યુટી આસિસ્ટન્ટ",
+        "વોર્ડ સહાયક"
+      ],
+      "industries": [
+        "Hospitals & Super-specialties",
+        "Nursing Homes",
+        "Elder Care Facilities",
+        "Diagnostic Labs"
+      ],
+      "industries_gu": [
+        "હોસ્પિટલો",
+        "નર્સિંગ હોમ્સ",
+        "વરિષ્ઠ નાગરિક સેવાઓ"
+      ],
+      "career_growth": [
+        {
+          "stage": 1,
+          "role": "GDA Trainee / Assistant",
+          "role_gu": "જીડીએ ટ્રેઇની",
+          "experience": "0–2 years",
+          "focus": "Ward assistance, patient hygiene, vitals check"
+        },
+        {
+          "stage": 2,
+          "role": "Senior Patient Care Executive",
+          "role_gu": "સીનિયર કેર એક્ઝિક્યુટિવ",
+          "experience": "2–4 years",
+          "focus": "ICU support, surgical ward logistics"
+        },
+        {
+          "stage": 3,
+          "role": "Floor Care Coordinator",
+          "role_gu": "ફ્લોર કોઓર્ડિનેટર",
+          "experience": "4–7 years",
+          "focus": "Nurse-doctor-patient coordination, shift handover"
+        },
+        {
+          "stage": 4,
+          "role": "Hospital Patient Services Supervisor",
+          "role_gu": "પેશન્ટ સર્વિસ સુપરવાઇઝર",
+          "experience": "7–10 years",
+          "focus": "Ward management, junior staff training"
+        },
+        {
+          "stage": 5,
+          "role": "Healthcare Admin / Registered Nursing Pathway",
+          "role_gu": "હેલ્થકેર એડમિન / જીએનએમ",
+          "experience": "10+ years",
+          "focus": "Hospital operations or GNM/B.Sc Nursing completion"
+        }
+      ],
+      "further_learning": [
+        "GNM / ANM Nursing qualification",
+        "Operation Theatre (OT) Technician",
+        "Medical Records Management"
+      ],
+      "further_learning_gu": [
+        "નર્સિંગ કોર્સ (એએનએમ/જીએનએમ)",
+        "ઓટી ટેકનિશિયન",
+        "મેડિકલ રેકોર્ડ મેનેજમેન્ટ"
+      ],
+      "parent_concerns": [
+        "Job Security",
+        "Emotional Workload",
+        "Safety & Hygiene",
+        "Social Perception"
+      ],
+      "demo_starting_earnings_monthly": "₹13,000–₹19,000",
+      "demo_starting_min": 13000,
+      "demo_starting_max": 19000,
+      "demo_experienced_earnings_monthly": "₹22,000–₹32,000",
+      "demo_experienced_min": 22000,
+      "demo_experienced_max": 32000,
+      "demo_placement_rate": "80%",
+      "demo_placement_value": 80,
+      "data_status": "SYNTHETIC DEMO"
+    },
+    {
+      "course_id": "VOC006",
+      "sector": "IT & Digital",
+      "sector_gu": "આઈટી અને ડિજિટલ સેવાઓ",
+      "trade_name": "Domestic Data Entry Operator",
+      "trade_name_gu": "ડેટા એન્ટ્રી ઓપરેટર",
+      "tagline": "Managing digital records, databases, spreadsheets, and office information systems",
+      "tagline_gu": "કોમ્પ્યુટર, ડેટાબેઝ, સ્પ્રેડશીટ અને ઓફિસ રેકોર્ડનું સંચાલન",
+      "aliases": [
+        "Data Entry Operator",
+        "Digital Data Entry Assistant"
+      ],
+      "aliases_gu": [
+        "ડેટા એન્ટ્રી આસિસ્ટન્ટ"
+      ],
+      "entry_education": "10th / 12th pass",
+      "entry_education_gu": "૧૦મું / ૧૨મું પાસ",
+      "typical_duration": "3–6 months depending on program",
+      "typical_duration_gu": "૩ થી ૬ મહિના",
+      "example_nsqf_level": "4",
+      "work_environment": "Offices, IT service centres, government administrative centres, banking back-offices",
+      "work_environment_gu": "ઓફિસો, બેંકિંગ બેકઓફિસ, બીપીઓ અને સરકારી સેવા કેન્દ્રો",
+      "practical_work": [
+        "High-speed touch typing & data verification",
+        "Excel functions & reports",
+        "Document digitisation",
+        "ERP record entry"
+      ],
+      "practical_work_gu": [
+        "ઝડપી ટાઇપિંગ અને ડેટા ચકાસણી",
+        "એક્સેલ શીટ્સ અને રિપોર્ટ્સ",
+        "દસ્તાવેજ ડિજિટાઇઝેશન"
+      ],
+      "major_skills": [
+        "Speed typing",
+        "MS Excel / Google Sheets",
+        "Digital document safety",
+        "Accuracy",
+        "English/Gujarati typing"
+      ],
+      "major_skills_gu": [
+        "ટાઇપિંગ સ્પીડ",
+        "એક્સેલ",
+        "ચોકસાઈ",
+        "ડિજિટલ ટૂલ્સ"
+      ],
+      "common_job_roles": [
+        "Data Entry Operator",
+        "Data Processing Assistant",
+        "Documentation Assistant"
+      ],
+      "common_job_roles_gu": [
+        "ડેટા એન્ટ્રી ઓપરેટર",
+        "ઓફિસ આસિસ્ટન્ટ"
+      ],
+      "industries": [
+        "IT & BPO Services",
+        "Banking & Financial Services",
+        "Government Administration",
+        "Logistics Companies"
+      ],
+      "industries_gu": [
+        "આઈટી સેવાઓ",
+        "બેન્કિંગ",
+        "સરકારી કચેરીઓ",
+        "લોજિસ્ટિક્સ"
+      ],
+      "career_growth": [
+        {
+          "stage": 1,
+          "role": "Data Entry Operator",
+          "role_gu": "ડેટા એન્ટ્રી ઓપરેટર",
+          "experience": "0–2 years",
+          "focus": "Data entry, verification, basic reporting"
+        },
+        {
+          "stage": 2,
+          "role": "Senior Documentation Assistant",
+          "role_gu": "સીનિયર આસિસ્ટન્ટ",
+          "experience": "2–4 years",
+          "focus": "Data reconciliation, spreadsheet macros"
+        },
+        {
+          "stage": 3,
+          "role": "Process Associate / MIS Executive",
+          "role_gu": "એમઆઈએસ એક્ઝિક્યુટિવ",
+          "experience": "4–6 years",
+          "focus": "MIS dashboards, SQL query basics, client reporting"
+        },
+        {
+          "stage": 4,
+          "role": "Team Leader / Quality Analyst",
+          "role_gu": "ટીમ લીડર",
+          "experience": "6–8 years",
+          "focus": "Team throughput, accuracy audits"
+        },
+        {
+          "stage": 5,
+          "role": "Operations Supervisor / Data Analyst Pathway",
+          "role_gu": "ઓપરેશન્સ મેનેજર",
+          "experience": "8+ years",
+          "focus": "Process automation, business intelligence"
+        }
+      ],
+      "further_learning": [
+        "Data Analytics (Power BI / Excel Advanced)",
+        "Python for Automation",
+        "BCA / Degree education"
+      ],
+      "further_learning_gu": [
+        "ડેટા એનાલિટિક્સ (પાવર બીઆઈ)",
+        "પાયથોન પ્રોગ્રામિંગ",
+        "બીસીએ"
+      ],
+      "parent_concerns": [
+        "Job Security with AI",
+        "Salary Ceiling",
+        "Sitting Work Health"
+      ],
+      "demo_starting_earnings_monthly": "₹13,000–₹19,000",
+      "demo_starting_min": 13000,
+      "demo_starting_max": 19000,
+      "demo_experienced_earnings_monthly": "₹22,000–₹32,000",
+      "demo_experienced_min": 22000,
+      "demo_experienced_max": 32000,
+      "demo_placement_rate": "72%",
+      "demo_placement_value": 72,
+      "data_status": "SYNTHETIC DEMO"
+    },
+    {
+      "course_id": "VOC007",
+      "sector": "Construction",
+      "sector_gu": "કન્સ્ટ્રક્શન (બાંધકામ)",
+      "trade_name": "Assistant Electrician / Construction Electrician",
+      "trade_name_gu": "આસિસ્ટન્ટ ઇલેક્ટ્રિશિયન",
+      "tagline": "Laying foundational conduit, cable trays, and electrical rough-ins on building sites",
+      "tagline_gu": "ઇમારતો અને પ્રોજેક્ટ્સ પર વાયરિંગ, કેબલિંગ અને ઇન્સ્ટોલેશન સહાય",
+      "aliases": [
+        "Construction Electrical Helper",
+        "Electrical Installation Assistant"
+      ],
+      "aliases_gu": [
+        "ઇલેક્ટ્રિકલ હેલ્પર"
+      ],
+      "entry_education": "10th pass",
+      "entry_education_gu": "૧૦મું પાસ",
+      "typical_duration": "3–12 months depending on qualification",
+      "typical_duration_gu": "૩ થી ૧૨ મહિના",
+      "example_nsqf_level": "3–4",
+      "work_environment": "Construction sites, residential projects, commercial buildings, infrastructure projects",
+      "work_environment_gu": "બાંધકામ સાઇટ, મકાન પ્રોજેક્ટ્સ, મોલ અને ઇન્ફ્રાસ્ટ્રક્ચર સાઇટ્સ",
+      "practical_work": [
+        "Cable pulling through conduits",
+        "Switchboard back-box fixing",
+        "Temporary power connections",
+        "Site safety inspections"
+      ],
+      "practical_work_gu": [
+        "કેબલ ખેંચવા અને ફિક્સિંગ",
+        "સ્વિચબોર્ડ ફિટિંગ",
+        "ટેમ્પરરી પાવર સેટિંગ"
+      ],
+      "major_skills": [
+        "Electrical basics",
+        "Hand tools mastery",
+        "Site safety protocols",
+        "Installation teamwork"
+      ],
+      "major_skills_gu": [
+        "ઇલેક્ટ્રિકલ બેઝિક્સ",
+        "ટૂલ્સનો ઉપયોગ",
+        "સાઇટ સેફ્ટી"
+      ],
+      "common_job_roles": [
+        "Assistant Electrician",
+        "Electrical Helper",
+        "Site Wiring Assistant"
+      ],
+      "common_job_roles_gu": [
+        "આસિસ્ટન્ટ ઇલેક્ટ્રિશિયન",
+        "વાયરિંગ સહાયક"
+      ],
+      "industries": [
+        "Building Construction",
+        "Civil Infrastructure",
+        "Electrical Contracting"
+      ],
+      "industries_gu": [
+        "બાંધકામ કંપનીઓ",
+        "ઇન્ફ્રાસ્ટ્રક્ચર",
+        "ઇલેક્ટ્રિકલ કોન્ટ્રાક્ટર્સ"
+      ],
+      "career_growth": [
+        {
+          "stage": 1,
+          "role": "Assistant Electrician",
+          "role_gu": "આસિસ્ટન્ટ ઇલેક્ટ્રિશિયન",
+          "experience": "0–2 years",
+          "focus": "Cable routing, wall chasing, tool support"
+        },
+        {
+          "stage": 2,
+          "role": "Electrician",
+          "role_gu": "ઇલેક્ટ્રિશિયન",
+          "experience": "2–4 years",
+          "focus": "Full circuitry, distribution board termination"
+        },
+        {
+          "stage": 3,
+          "role": "Senior Construction Electrician",
+          "role_gu": "સીનિયર ઇલેક્ટ્રિશિયન",
+          "experience": "4–7 years",
+          "focus": "High-rise wiring, testing and commissioning"
+        },
+        {
+          "stage": 4,
+          "role": "Site Electrical Supervisor",
+          "role_gu": "ઇલેક્ટ્રિકલ સાઇટ સુપરવાઇઝર",
+          "experience": "7–10 years",
+          "focus": "Floor blueprint execution, vendor coordination"
+        },
+        {
+          "stage": 5,
+          "role": "Licensed Electrical Contractor",
+          "role_gu": "લાયસન્સ ધારક કોન્ટ્રાક્ટર",
+          "experience": "10+ years",
+          "focus": "Direct building electrification contracts"
+        }
+      ],
+      "further_learning": [
+        "Full Electrician Trade Certificate (VOC001)",
+        "Safety Officer Certification",
+        "Electrical Diploma"
+      ],
+      "further_learning_gu": [
+        "ઇલેક્ટ્રિશિયન સર્ટિફિકેટ",
+        "સેફ્ટી ઓફિસર તાલીમ",
+        "ડિપ્લોમા"
+      ],
+      "parent_concerns": [
+        "Physical Labour",
+        "Safety",
+        "Income Progression",
+        "Job Continuity"
+      ],
+      "demo_starting_earnings_monthly": "₹12,000–₹17,000",
+      "demo_starting_min": 12000,
+      "demo_starting_max": 17000,
+      "demo_experienced_earnings_monthly": "₹23,000–₹34,000",
+      "demo_experienced_min": 23000,
+      "demo_experienced_max": 34000,
+      "demo_placement_rate": "74%",
+      "demo_placement_value": 74,
+      "data_status": "SYNTHETIC DEMO"
+    },
+    {
+      "course_id": "VOC008",
+      "sector": "Retail & Logistics",
+      "sector_gu": "રિટેલ અને કસ્ટમર સર્વિસ",
+      "trade_name": "Retail Sales Associate",
+      "trade_name_gu": "રિટેલ સેલ્સ એસોસિએટ",
+      "tagline": "Customer engagement, product merchandising, and point-of-sale in modern retail outlets",
+      "tagline_gu": "આધુનિક સ્ટોર્સ, મોલ અને શોરૂમમાં ગ્રાહક સેવા, સેલ્સ અને સ્ટોર મેનેજમેન્ટ",
+      "aliases": [
+        "Retail Associate",
+        "Sales Associate",
+        "Store Associate"
+      ],
+      "aliases_gu": [
+        "સેલ્સ એક્ઝિક્યુટિવ",
+        "સ્ટોર એસોસિએટ"
+      ],
+      "entry_education": "10th / 12th pass",
+      "entry_education_gu": "૧૦મું / ૧૨મું પાસ",
+      "typical_duration": "3–6 months depending on program",
+      "typical_duration_gu": "૩ થી ૬ મહિના",
+      "example_nsqf_level": "3–4",
+      "work_environment": "Retail showrooms, supermarkets, fashion brand outlets, electronic stores",
+      "work_environment_gu": "મોલ, સુપરમાર્કેટ, ઇલેક્ટ્રોનિક્સ શોરૂમ અને બ્રાન્ડ આઉટલેટ્સ",
+      "practical_work": [
+        "Customer consultation & demonstration",
+        "POS billing & cash handling",
+        "Stock inventory display & replenishment",
+        "Promotion management"
+      ],
+      "practical_work_gu": [
+        "ગ્રાહકોને પ્રોડક્ટ સમજાવવી",
+        "બિલિંગ અને સ્ટોક મેનેજમેન્ટ",
+        "ડિસ્પ્લે ગોઠવણી"
+      ],
+      "major_skills": [
+        "Customer communication",
+        "Sales persuasion",
+        "POS software",
+        "Product knowledge",
+        "Inventory basics"
+      ],
+      "major_skills_gu": [
+        "સંવાદ કૌશલ્ય",
+        "વેચાણ કળા",
+        "પીઓએસ બિલિંગ",
+        "પ્રોડક્ટ નોલેજ"
+      ],
+      "common_job_roles": [
+        "Retail Sales Associate",
+        "Customer Service Associate",
+        "Cashier"
+      ],
+      "common_job_roles_gu": [
+        "રિટેલ સેલ્સ એસોસિએટ",
+        "કેશિયર"
+      ],
+      "industries": [
+        "Fashion & Lifestyle Retail",
+        "Electronics Retail",
+        "Supermarket Chains",
+        "E-commerce Flagships"
+      ],
+      "industries_gu": [
+        "રિટેલ સ્ટોર્સ",
+        "મોલ",
+        "ઇલેક્ટ્રોનિક્સ શોરૂમ"
+      ],
+      "career_growth": [
+        {
+          "stage": 1,
+          "role": "Retail Sales Associate",
+          "role_gu": "સેલ્સ એસોસિએટ",
+          "experience": "0–2 years",
+          "focus": "Floor sales, customer service, inventory"
+        },
+        {
+          "stage": 2,
+          "role": "Senior Sales Executive / Department Specialist",
+          "role_gu": "સીનિયર સેલ્સ એક્ઝિક્યુટિવ",
+          "experience": "2–4 years",
+          "focus": "High-ticket sales, customer retention"
+        },
+        {
+          "stage": 3,
+          "role": "Team Leader / Department Head",
+          "role_gu": "ટીમ લીડર",
+          "experience": "4–6 years",
+          "focus": "Section targets, staff roster, visual merchandising"
+        },
+        {
+          "stage": 4,
+          "role": "Assistant Store Manager",
+          "role_gu": "આસિસ્ટન્ટ સ્ટોર મેનેજર",
+          "experience": "6–8 years",
+          "focus": "Store P&L, audits, shrinkage control"
+        },
+        {
+          "stage": 5,
+          "role": "Store Manager / Regional Retail Operations",
+          "role_gu": "સ્ટોર મેનેજર / એરિયા મેનેજર",
+          "experience": "8+ years",
+          "focus": "Entire showroom profit, franchise expansion"
+        }
+      ],
+      "further_learning": [
+        "Retail Management Diploma",
+        "Digital Marketing & E-commerce Operations",
+        "BBA in Retail"
+      ],
+      "further_learning_gu": [
+        "રિટેલ મેનેજમેન્ટ ડિપ્લોમા",
+        "ડિજિટલ માર્કેટિંગ",
+        "બીબીએ"
+      ],
+      "parent_concerns": [
+        "Salary & Commission",
+        "Long Working Hours",
+        "Social Respect",
+        "Long-term Promotion"
+      ],
+      "demo_starting_earnings_monthly": "₹12,000–₹18,000",
+      "demo_starting_min": 12000,
+      "demo_starting_max": 18000,
+      "demo_experienced_earnings_monthly": "₹22,000–₹35,000",
+      "demo_experienced_min": 22000,
+      "demo_experienced_max": 35000,
+      "demo_placement_rate": "73%",
+      "demo_placement_value": 73,
+      "data_status": "SYNTHETIC DEMO"
+    }
+  ]
+}
